@@ -95,7 +95,7 @@ namespace Comparacion2024
                 {
 
                     // Filtra las filas del DataTable por el número de slot ingresado
-                    DataRow[] filasFiltradas = datatable.Select("Slot = '" + slot + "'");
+                    DataRow[] filasFiltradas = datatable.Select("Slot = '" + txtFeeder.Text + "'");
 
                     // Verifica si se encontraron filas con el número de slot especificado
                     if (filasFiltradas.Length > 0)

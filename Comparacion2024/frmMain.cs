@@ -32,13 +32,16 @@ namespace Comparacion2024
         int? num;
         string filePath = "nombreEstacion.txt";
         SqlConnection conexion = new SqlConnection("Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true");
-        
+        delegate void UpdateLabelDelegate(string message2);
+        UpdateLabelDelegate updateLabel;
         DataTable dataTable = new DataTable();
         SeaMAX sea = new SeaMAX();
         ClsReels reel = new ClsReels();
+        bool EsdeDosPastas = false;
         public frmMain(int? id, string nomus)
         {
             InitializeComponent();
+            updateLabel = new UpdateLabelDelegate(UpdateLabel);
             num = id;
             this.nombreusuario = nomus;
             
@@ -90,7 +93,17 @@ namespace Comparacion2024
             var tiempo = DateTime.Now.ToString();
             dgvActions.Rows.Add(new object[] { tiempo, accion });
         }
-
+        private void UpdateLabel(string message)
+        {
+            if (lblCiclos.InvokeRequired)
+            {
+                lblCiclos.Invoke(updateLabel, new object[] { message });
+            }
+            else
+            {
+               lblCiclos.Text = message;
+            }
+        }
         public void UpdateStatusInGrid(int rowIndex, string status)
         {
             if (InvokeRequired)
@@ -138,7 +151,7 @@ namespace Comparacion2024
             int cont = 0;
 			while (continuarlectura)
 			{
-                collectedValues.Clear();
+                collectedValues.Clear(); //Limpiar la lista para reemplazar valores 
                 for (int h = 0; h < 4; h++)
                 {
                     if (start == 4)
@@ -155,72 +168,71 @@ namespace Comparacion2024
                             for (int i = 0; i < numberofchannels; i++)
                             {
                                 collectedValues.Add(Values[i]);  // Añade el valor leído a la lista
-
-                                // Verifica si la lista alcanzó el número deseado de elementos antes de procesar
-                                if (collectedValues.Count == 4)
+                            }
+                            if (collectedValues.Count >= 4) // Asegúrate de tener suficientes datos para procesar
+                            {
+                                if (dgvCarga.Rows.Count <= 3)
                                 {
-                                    
-                                   // Emite un evento con los datos actualizados
-                                     // Limpia la lista después de emitir el evento para nuevas lecturas
+                                    OnDataUpdated(collectedValues.ToArray());
+                                    UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                    UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
+
+                                    //lblCiclos.Text = cont.ToString();
+
+                                    // Decide qué conjunto de valores enviar a los outputs digitales
+                                          
+                                    if (collectedValues[3] == 0 && pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+									{
+									
+                                       pastvalues = collectedValues[3];
+                                        cont++;
+                                        updateLabel(cont.ToString());
+                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                        reel.DisminuirCantidad(ObtenerNumParte());
+                                    }
+									else
+                                    {
+                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                    }
                                 }
+                                if (dgvCarga.Rows.Count <= 4)
+                                {
+                                    OnDataUpdated(collectedValues.ToArray());
+                                    UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                    UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
+                                    UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
+                                    if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 )
+                                    {
+                                        pastvalues = collectedValues[3];
+                                        cont++;
+                                        updateLabel(cont.ToString());
+                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                        reel.DisminuirCantidad(ObtenerNumParte());
+                                    }
+                                    else
+                                    {
+                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                    }
+                                }
+                             
                             }
 
-                            // Actualiza la interfaz de usuario o realiza más lógica según los valores actuales
-                            // Aquí puedes añadir lógica adicional para manejar los valores actuales
-                            
+                            // Más casos y manejo de errores
+
+                            if (collectedValues[3] == 1 && pastvalues == 0)
+                            {
+                                pastvalues = collectedValues[3];
+                            }
                         }
-                        if (collectedValues.Count >= 4) // Asegúrate de tener suficientes datos para procesar
-                        {
-							if (dgvCarga.Rows.Count <= 3)
-							{
-                                OnDataUpdated(collectedValues.ToArray());
-                                UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-                                UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
-
-                                //lblCiclos.Text = cont.ToString();
-                               
-                                // Decide qué conjunto de valores enviar a los outputs digitales
-                                if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0)
-                                {
-                                    cont++;
-                                    sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                }
-                                else
-                                {
-                                    sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
-                                }
-                            }
-							if (dgvCarga.Rows.Count <=4)
-							{
-                                OnDataUpdated(collectedValues.ToArray());
-                                UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-                                UpdateStatusInGrid(0, collectedValues[1] == 0 ? "✔" : "X");
-                                UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
-                                if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0)
-                                {
-                                    cont++;
-                                    sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                }
-                                else
-                                {
-                                    sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
-                                }
-                            }
-                         
-
-                           
-                        }
-                        // Más casos y manejo de errores
                     }
                     catch (Exception ex)
                     {
-                        // Considera manejar o registrar la excepción
-                        Console.WriteLine("Error: " + ex.Message);
+                        //manejar o registrar la excepción
+                     //MessageBox.Show("Error: " + ex.Message);
                     }
                     start++;
                 }
-                Thread.Sleep(1000);
-                
+                Thread.Sleep(1000);            
             }
             
         }
@@ -696,7 +708,7 @@ namespace Comparacion2024
 
                     conexion.Close();
                     dgvCarga.DataSource = dataTable;
-                    this.Text = $"BarTector - Estación: {nombreEstacion + "::" + openFileDialog1.FileName}";
+                    this.Text = $"EBT - Estación: {nombreEstacion + "::" + openFileDialog1.FileName}";
                 }
                 catch (Exception ex)
                 {
@@ -706,7 +718,6 @@ namespace Comparacion2024
         }
         public string ObtenerNumParte()
         {
-
             string ultimoNumeroDeParte = string.Empty; // Inicializa una variable para guardar el último número de parte encontrado
 
             try
