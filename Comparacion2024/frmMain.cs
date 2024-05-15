@@ -38,9 +38,15 @@ namespace Comparacion2024
         SeaMAX sea = new SeaMAX();
         ClsReels reel = new ClsReels();
         bool EsdeDosPastas = false;
+        bool EsdeUnaPasta = false;
         public frmMain(int? id, string nomus)
         {
             InitializeComponent();
+            frmReelCharge compForm = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 0);
+            
+            bool pasta1Correcta = compForm.ComparacionPasta1Correcta;
+            bool pasta2Correcta = compForm.ComparacionPasta2Correcta;
+            bool stencilCorrecta = compForm.ComparacionStencilCorrecta;
             updateLabel = new UpdateLabelDelegate(UpdateLabel);
             num = id;
             this.nombreusuario = nomus;
@@ -128,10 +134,10 @@ namespace Comparacion2024
             int handle = sea.SM_Open("COM6");
             return handle;
         }
-        public delegate void ValuesChangedEventHandler(byte[] newValues);
-        public event ValuesChangedEventHandler ValuesChanged;
-        public delegate void ChangeEventHandler(bool cambio);
-        public event ChangeEventHandler Change;
+        //public delegate void ValuesChangedEventHandler(byte[] newValues);
+        //public event ValuesChangedEventHandler ValuesChanged;
+        //public delegate void ChangeEventHandler(bool cambio);
+        //public event ChangeEventHandler Change;
         public delegate void DataUpdatedEventHandler(byte[] data);
         public event DataUpdatedEventHandler DataUpdated;
         protected virtual void OnDataUpdated(byte[] data)
@@ -140,7 +146,7 @@ namespace Comparacion2024
         }
         public void InputRead()
 		{
-            frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
+            //frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
             List<byte> collectedValues = new List<byte>();
             byte[] Values1 = { 1, 0, 0, 0, 0, 0, 0, 0 };
            byte[] Values2 = { 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -173,6 +179,8 @@ namespace Comparacion2024
                             {
                                 if (dgvCarga.Rows.Count <= 3)
                                 {
+                                    EsdeUnaPasta = true;
+                                    EsdeDosPastas = false;
                                     OnDataUpdated(collectedValues.ToArray());
                                     UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
                                     UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
@@ -197,6 +205,8 @@ namespace Comparacion2024
                                 }
                                 if (dgvCarga.Rows.Count <= 4)
                                 {
+                                    EsdeDosPastas = true;
+                                    EsdeUnaPasta = false;
                                     OnDataUpdated(collectedValues.ToArray());
                                     UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
                                     UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
@@ -612,10 +622,20 @@ namespace Comparacion2024
                 // lista a un array 
                 numerosDeParteArray = numerosDeParteList.ToArray();
 
-                // Pasa los valores a la forma de comparación
-                frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this,nombreEstacion, bypass);
+				// Pasa los valores a la forma de comparación
+				if (EsdeDosPastas == true)
+				{
+                    frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 2);
+                    forma.ShowDialog();
+                }
+				else if (EsdeUnaPasta == true)
+				{
+                    frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 1);
+                    forma.ShowDialog();
+                }
+               
                 //forma.SubscribeToValuesChanged();
-                forma.ShowDialog();
+               
 
             }
             else

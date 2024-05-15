@@ -13,9 +13,9 @@ using System.Data.SqlClient;
 using System.Threading;
 namespace Comparacion2024
 {
- public partial class frmReelCharge : Form
+    public partial class frmReelCharge : Form
     {
-       
+
         string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
         private frmMain main;
         private DataTable datatable;
@@ -23,21 +23,25 @@ namespace Comparacion2024
 
         private string nomEs;
         frmAddReel frmagregarreel = new frmAddReel();
-       
+
         ClsComparaciones comp = new ClsComparaciones();
         ClsTelegram tel = new ClsTelegram();
         private ClsConex conexion;
         string Pasta1, Pasta2, Stencil, slot, Resul = "X";
-        int num0 = 0;
-        int num1 = 0;
-        byte PastValues = 255;
+        string[] mensajeEscanear = {"Volver a Escanear Pasta1","Volver a Escanear Pasta2","Volver a Escanear Stencil"};
+        int numpasta;
+        int []num1 = {0,0,0,0};
+        int contadormensaje; 
+        byte []PastValues = {1,1,1,1};
         bool encontrado = false;
-        private bool comparacionPastaCorrecta = false;
-        private bool comparacionStencilCorrecta = false;
-       
+        public bool ComparacionPasta1Correcta { get; private set; }
+        public bool ComparacionPasta2Correcta { get; private set; }
+        public bool ComparacionStencilCorrecta { get; private set; }
+        int[] cambio = { 3,3,3,3};
         private bool bypass;
-        public frmReelCharge(DataTable dataTable, string[] numerosdeparte, frmMain m,string nombreest,bool by)
+        public frmReelCharge(DataTable dataTable, string[] numerosdeparte, frmMain m,string nombreest,bool by,int num)
         {
+            this.numpasta = num;
             this.datatable = dataTable;
             this.numerosDeParte = numerosdeparte;
             this.main = m;
@@ -45,7 +49,7 @@ namespace Comparacion2024
             this.bypass = by;
             InitializeComponent();
             this.main.DataUpdated += MainForm_DataUpdated;
-            SubscribeToValuesChanged();
+            //SubscribeToValuesChanged();
             conexion = new ClsConex();
             
         }
@@ -65,16 +69,22 @@ namespace Comparacion2024
         }
         public void Comp()
         {
+   //         bool reelExists = VerificarReelExistente(txtReelID.Text);
+   //         if (reelExists)
+			//{
 
-			if (isStencil(txtReelID.Text) == true)
-			{
-                main.RegistrarAccion("Comparacion de Stencil");
-            }
-			else
-			{
-                main.RegistrarAccion("Comparacion de Pasta");
-            }
-               
+			//}
+            if (txtFeeder.Text != "" && txtReelUserID.Text != "" && txtReelID.Text != "")
+            {
+                if (isStencil(txtReelID.Text) == true)
+                {
+                    main.RegistrarAccion("Comparacion de Stencil");
+                }
+                else
+                {
+                    main.RegistrarAccion("Comparacion de Pasta");
+                }
+
 
                 string numpart = EnviarNumeroParte(txtReelID.Text);
 
@@ -95,7 +105,7 @@ namespace Comparacion2024
                 {
 
                     // Filtra las filas del DataTable por el número de slot ingresado
-                    DataRow[] filasFiltradas = datatable.Select("Slot = '" + txtFeeder.Text + "'");
+                    DataRow[] filasFiltradas = datatable.Select("Slot = '" + slot + "'");
 
                     // Verifica si se encontraron filas con el número de slot especificado
                     if (filasFiltradas.Length > 0)
@@ -110,17 +120,17 @@ namespace Comparacion2024
                             if (numeroDeParteGrid == numpart)
                             {
                                 Resul = "OK";
-                            if (isStencil(txtReelID.Text) == true)
-                            {
-                              
-                                comparacionStencilCorrecta = true; // Actualiza el estado de la comparación del stencil
-                            }
-                            else
-                            {
-                              
-                                comparacionPastaCorrecta = true; // Actualiza el estado de la comparación de la pasta
-                            }   
-                            encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
+                                if (isStencil(txtReelID.Text) == true)
+                                {
+
+                                    /*comparacionStencilCorrecta = true;*/ // Actualiza el estado de la comparación del stencil
+                                }
+                                else
+                                {
+
+                                   /* comparacionPastaCorrecta = true;*/ // Actualiza el estado de la comparación de la pasta
+                                }
+                                encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
                                 FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
                                 frm.ShowDialog();
                                 break; // Sale del bucle ya que se encontró una coincidencia
@@ -130,18 +140,19 @@ namespace Comparacion2024
                         // Verifica si después de la iteración no se encontró ninguna coincidencia
                         if (!encontrado)
                         {
-                        if (isStencil(txtReelID.Text) == true)
-                        {
-                          
-                            comparacionStencilCorrecta = false; // Actualiza el estado si la comparación falla
-                        }
-                        else
-                        {
-                           
-                            comparacionPastaCorrecta = false; // Actualiza el estado si la comparación falla
-                        }
-                        FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
+                            if (isStencil(txtReelID.Text) == true)
+                            {
+
+                              /*  comparacionStencilCorrecta = false;*/ // Actualiza el estado si la comparación falla
+                            }
+                            else
+                            {
+
+                                /*comparacionPastaCorrecta = false;*/ // Actualiza el estado si la comparación falla
+                            }
+                            FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
                             frm.ShowDialog();
+                            MessageBox.Show(mensajeEscanear[contadormensaje]);
                             //this.Close();
                             tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
                         }
@@ -159,28 +170,26 @@ namespace Comparacion2024
                 }
                 comp.AgregarComparaciones(Convert.ToInt32(txtReelUserID.Text), nomEs, Pasta1, Pasta2, Stencil, DateTime.Now, Resul);
 
+            }
            
-			
-        }
-        public void SubscribeToValuesChanged()
-        {
 
-            main.ValuesChanged += FormOrigin_ValuesChanged;
+
+
+
         }
+        //public void SubscribeToValuesChanged()
+        //{
+
+        //    main.ValuesChanged += FormOrigin_ValuesChanged;
+        //}
         private void MainForm_DataUpdated(byte[] data)
         {
-			//Actualiza la interfaz de usuario o realiza procesamientos mediante los valores de la lista con cada byte
-
-			
-		}
-        private void FormOrigin_ValuesChanged(byte[] newValues)
-        {
-           
+            //Actualiza la interfaz de usuario o realiza procesamientos mediante los valores de la lista con cada byte
             if (this.InvokeRequired)
             {
                 try
                 {
-                    this.Invoke(new Action(() => FormOrigin_ValuesChanged(newValues)));
+                    this.Invoke(new Action(() => MainForm_DataUpdated(data)));
                 }
                 catch (ObjectDisposedException)
                 {
@@ -189,89 +198,138 @@ namespace Comparacion2024
                 }
                 return;
             }
+            if (this.Visible && this.WindowState != FormWindowState.Minimized)
+			{
+                
+                //En el siguiente metodo se utiliza para despliegar valores en el slot como en el txt del feeder, al igual el que cuando detecte el sensor compare solo una vez 
+                //Thread.Sleep(5000);
+                for (int i = 0; i < 3; i++)
+                {
+                    contadormensaje = i;
+                    if (data[i] == 0 && PastValues[i] == 1)
+                    {
+                        cambio[i] = 0;
+                        PastValues[i] = data[i];
+                    }
+                    if (data[i] == 1 && PastValues[i] == 0)
+                    {
+                        cambio[i] = 1;
+                        PastValues[i] = data[i];
+                    }
+
+                    if (data[i] == 0)
+                    {
+                        slot = Convert.ToString(i + 1);
+                        txtFeeder.Text = Convert.ToString(i + 1);
+                        if (cambio[i] == 0)
+                        {
+                            if (bypass == true)
+                            {
+
+                            }
+                            else
+                            {
+                                Comp();
+                            }
+
+                            cambio[i] = 1;
+                            num1 [i]= 0;
+                        }
+
+                    }
+				else if (data[i] == 1 && cambio[i] == 1 && num1[i] ==0)
+					{
+                        MessageBox.Show(mensajeEscanear[i]);
+                        num1[i]=1;    
+					}
+
+
+
+                }
+               
+
+
+            }
+
+		}
+      //  private void FormOrigin_ValuesChanged(byte[] newValues)
+      //  {
+           
+           
            
                
             
 
-            // Verifica si la forma está visible y no minimizada.
-            if (this.Visible && this.WindowState != FormWindowState.Minimized)
-            {
-                Thread.Sleep(5000);
-                if (PastValues == 4 || PastValues == 20 || PastValues == 12 || PastValues == 28)
-                {
-                    if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
-                    { num0 = 0; }
+      //      // Verifica si la forma está visible y no minimizada.
+      //      if (this.Visible && this.WindowState != FormWindowState.Minimized)
+      //      {
+      //          Thread.Sleep(5000);
+      //          if (PastValues == 4 || PastValues == 20 || PastValues == 12 || PastValues == 28)
+      //          {
+      //              if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
+      //              { num0 = 0; }
 
 
-                }
-                if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
-                {
-                    slot = "1";
-                    txtFeeder.Text = "1";
-                    if (num0 == 0)
-                    {
-						if (bypass == true)
-						{
+      //          }
+      //          if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
+      //          {
+      //              slot = "1";
+      //              txtFeeder.Text = "1";
+      //              if (num0 == 0)
+      //              {
+						//if (bypass == true)
+						//{
 
-						}
-						else
-						{
-                            Comp();
-                        }
+						//}
+						//else
+						//{
+      //                      Comp();
+      //                  }
                         
-                        num0 = 1;
-                    }
-                }
+      //                  num0 = 1;
+      //              }
+      //          }
 
-                if (PastValues == 8 || PastValues == 24 || PastValues == 12 || PastValues == 28)
-                {
-                    if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
-                    {
-                        num1 = 0;
-                    }
+      //          if (PastValues == 8 || PastValues == 24 || PastValues == 12 || PastValues == 28)
+      //          {
+      //              if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
+      //              {
+      //                  num1 = 0;
+      //              }
 
-                }
-                if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
-                {
-                    txtFeeder.Text = "3";
-                    slot = "3";
-                    if (num1 == 0)
-                    {
-						if (bypass == true)
-						{
+      //          }
+      //          if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
+      //          {
+      //              txtFeeder.Text = "3";
+      //              slot = "3";
+      //              if (num1 == 0)
+      //              {
+						//if (bypass == true)
+						//{
                             
-                        }
-						else
-						{
-                            Comp();
-                        }
+      //                  }
+						//else
+						//{
+      //                      Comp();
+      //                  }
                        
-                        num1 = 1;
-                    }
+      //                  num1 = 1;
+      //              }
 
-                }
-                else
-                {
-                    txtFeeder.Text = "";
-                    slot = "";
-                }
-                PastValues = newValues[0];
-            }
-        }
-        public bool VerificarResultados()
-        {
-            if (comparacionPastaCorrecta && comparacionStencilCorrecta)
-            {
-                // Ambas comparaciones son correctas, proceder con los siguientes pasos.
-                // Implementa aquí lo que debería ocurrir si la verificación es correcta.
-                return true;
-            }
-            else
-            {
-                // Manejar el caso donde alguna de las comparaciones es incorrecta.
-                return false;
-            }
-        }
+      //          }
+      //          else
+      //          {
+      //              txtFeeder.Text = "";
+      //              slot = "";
+      //          }
+      //          PastValues = newValues[0];
+      //      }
+      //  }
+
+       
+
+
+       
         private void ComboLabelID_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
@@ -363,7 +421,8 @@ namespace Comparacion2024
 
         private void frmReelCharge_FormClosing(object sender, FormClosingEventArgs e)
         {
-            main.ValuesChanged -= FormOrigin_ValuesChanged;
+            //main.ValuesChanged -= FormOrigin_ValuesChanged;
+            main.DataUpdated -= MainForm_DataUpdated;
         }
 
         private void btnOkUp_Click(object sender, EventArgs e)
@@ -416,9 +475,10 @@ namespace Comparacion2024
         }
         public bool isStencil(string id)
 		{
-			try
+            bool stencil = false;
+            try
 			{
-                 bool stencil = false;
+                
             if (id.Substring(0,2) == "ST")
             {
                 stencil = true;
@@ -429,16 +489,16 @@ namespace Comparacion2024
             }
             else
             {
-                MessageBox.Show("ID Imposible de identificar como pasta o stencil");
-            }
-            return stencil;
+					MessageBox.Show("ID Imposible de identificar como pasta o stencil");
+				}
+            
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
-				throw;
+                //Console.WriteLine("Error:" + ex);
+				//throw;
 			}
-           
+            return stencil;
         }
 
 		private void checkDisableLabel_CheckedChanged(object sender, EventArgs e)

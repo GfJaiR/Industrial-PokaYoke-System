@@ -50,7 +50,7 @@ namespace Comparacion2024
         public void SubscribeToValuesChanged()
         {
          
-            main.ValuesChanged += FormOrigin_ValuesChanged;
+            //main.ValuesChanged += FormOrigin_ValuesChanged;
         }
 
         private void FormOrigin_ValuesChanged(byte[] newValues)
@@ -130,7 +130,7 @@ namespace Comparacion2024
 
         private void frmConfirmar_FormClosing(object sender, FormClosingEventArgs e)
         {
-           main.ValuesChanged -= FormOrigin_ValuesChanged;
+           //main.ValuesChanged -= FormOrigin_ValuesChanged;
         }
 
         private void txtConfNum_KeyDown(object sender, KeyEventArgs e)
