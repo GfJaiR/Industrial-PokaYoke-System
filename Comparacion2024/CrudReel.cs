@@ -51,10 +51,10 @@ namespace Comparacion2024
         {
             CenterFormOnScreen();    
             SqlConnection connection = new SqlConnection(connectionString);
-            string query = "SELECT * FROM Reels";
+            string query = "SELECT * FROM Stenciles";
             SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-            adapter.Fill(dataSet, "Reels");
-            dgvReel.DataSource = dataSet.Tables["Reels"];
+            adapter.Fill(dataSet, "Stenciles");
+            dgvReel.DataSource = dataSet.Tables["Stenciles"];
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -73,7 +73,7 @@ namespace Comparacion2024
                             string Reelid = Convert.ToString(dgvReel.Rows[rowIndex].Cells["ReelID"].Value);
 
                             // Ejecutar la consulta DELETE de forma segura
-                            string deleteQuery = "DELETE FROM Reels WHERE ReelID = @Reelid";
+                            string deleteQuery = "DELETE FROM Stenciles WHERE ReelID = @Reelid";
                             SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
                             deleteCommand.Parameters.AddWithValue("@Reelid", Reelid);
 
@@ -82,16 +82,16 @@ namespace Comparacion2024
                             connection.Close();
 
                             // Actualizar el DataGridView
-                            string query = "SELECT * FROM Reels";
+                            string query = "SELECT * FROM Stenciles";
                             // Limpiar el DataTable antes de cargar datos
-                            dataSet.Tables["Reels"].Clear();
+                            dataSet.Tables["Stenciles"].Clear();
 
                             // Cargar datos en el DataTable
                             SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                            adapter.Fill(dataSet, "Reels");
+                            adapter.Fill(dataSet, "Stenciles");
 
                             // Actualizar el DataGridView
-                            dgvReel.DataSource = dataSet.Tables["Reels"];
+                            dgvReel.DataSource = dataSet.Tables["Stenciles"];
                         }
                         MessageBox.Show("Reel eliminado");
                     }
@@ -119,16 +119,16 @@ namespace Comparacion2024
             {
                 SqlConnection connection = new SqlConnection(connectionString);
                 // Actualizar el DataGridView
-                string query = "SELECT * FROM Reels";
+                string query = "SELECT * FROM Stenciles";
                 // Limpiar el DataTable antes de cargar datos
-                dataSet.Tables["Reels"].Clear();
+                dataSet.Tables["Stenciles"].Clear();
 
                 // Cargar datos en el DataTable
                 SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                adapter.Fill(dataSet, "Reels");
+                adapter.Fill(dataSet, "Stenciles");
 
                 // Actualizar el DataGridView
-                dgvReel.DataSource = dataSet.Tables["Reels"];
+                dgvReel.DataSource = dataSet.Tables["Stenciles"];
             }
             catch (Exception)
             {
@@ -142,21 +142,21 @@ namespace Comparacion2024
 
             SqlConnection connection = new SqlConnection(connectionString);
             // Actualizar el DataGridView
-            string query = "SELECT * FROM Reels";
+            string query = "SELECT * FROM Stenciles";
             // Limpiar el DataTable antes de cargar datos
-            dataSet.Tables["Reels"].Clear();
+            dataSet.Tables["Stenciles"].Clear();
 
             // Cargar datos en el DataTable
             SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-            adapter.Fill(dataSet, "Reels");
+            adapter.Fill(dataSet, "Stenciles");
 
             // Actualizar el DataGridView
-            dgvReel.DataSource = dataSet.Tables["Reels"];
+            dgvReel.DataSource = dataSet.Tables["Stenciles"];
         }
 
         private void dgvReel_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            dgvReel.DataSource = dataSet.Tables["Reels"];
+            dgvReel.DataSource = dataSet.Tables["Stenciles"];
         }
 
 		private void btnModificar_Click(object sender, EventArgs e)
@@ -180,10 +180,10 @@ namespace Comparacion2024
             try
             {
                 // Asegúrate de tener la tabla "Usuarios" en el DataSet
-                if (dataSet.Tables.Contains("Reels"))
+                if (dataSet.Tables.Contains("Stenciles"))
                 {
                     // Utiliza el DataView que ya has creado
-                    datav = new DataView(dataSet.Tables["Reels"]);
+                    datav = new DataView(dataSet.Tables["Stenciles"]);
 
                     // Aplica el filtro al DataView
                     datav.RowFilter = $"PartNo LIKE '%{txtBusqueda.Text}%'";
@@ -202,5 +202,7 @@ namespace Comparacion2024
             }
 
         }
-    }
+
+		
+	}
 }

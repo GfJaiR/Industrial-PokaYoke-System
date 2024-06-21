@@ -29,7 +29,7 @@ namespace Comparacion2024
         {
             // Verificar si hay al menos un número de parte
           
-                string query = "UPDATE Reels SET Quantity = Quantity - 1 WHERE PartNo = @partNo";
+                string query = "UPDATE Stenciles SET Quantity = Quantity - 1 WHERE PartNo = @partNo";
                 string connection = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
 
                 using (SqlConnection connectionstring = new SqlConnection(connection))
