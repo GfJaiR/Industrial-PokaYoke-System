@@ -12,10 +12,12 @@ namespace Comparacion2024
 {
 	public partial class frmEditar : Form
 	{
+        private frmMain forma;
 		public string RegistroID { get; set; }
         string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
-        public frmEditar()
+        public frmEditar(frmMain form)
 		{
+            this.forma = form;
 			InitializeComponent();
 		}
 
@@ -46,6 +48,7 @@ namespace Comparacion2024
                         if (result > 0)
                         {
                             MessageBox.Show("Datos actualizados correctamente.");
+                            forma.RefrescarDataGridView();
                         }
                         else
                         {

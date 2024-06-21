@@ -7,20 +7,20 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 namespace Comparacion2024
 {
-    class ClsReels
+    class ClsStenciles
     {
-        public bool AgregarReel(string userid, string reelid, string partno, int qu)
+        public bool AgregarStencil(string userid, string reelid, string partno, int qu)
         {
-            Reels NuevoReel = new Reels();
+            Stenciles NuevoStencil = new Stenciles();
             using (BDLogin db = new BDLogin())
             {
                 // Asignar el RolID al usuario
-                NuevoReel.UserID = userid;
-                NuevoReel.ReelID = reelid;
-                NuevoReel.PartNo = partno;
-                NuevoReel.Quantity = qu;
+                NuevoStencil.UserID = userid;
+                NuevoStencil.ReelID = reelid;
+                NuevoStencil.PartNo = partno;
+                NuevoStencil.Quantity = qu;
                 // Agregar el usuario a la tabla Usuarios
-                db.Reels.Add(NuevoReel);
+                db.Stenciles.Add(NuevoStencil);
                 return db.SaveChanges() > 0;
             
             }
@@ -48,7 +48,7 @@ namespace Comparacion2024
 
                             if (rowsAffected > 0)
                             {
-                                MessageBox.Show("Cantidad actualizada correctamente para el número de parte: " + numerodeparte);
+                                //MessageBox.Show("Cantidad actualizada correctamente para el número de parte: " + numerodeparte);
                             }
                             else
                             {

@@ -206,7 +206,9 @@
     <Compile Include="BDLogin.cs" />
     <Compile Include="ClsComparaciones.cs" />
     <Compile Include="ClsConex.cs" />
-    <Compile Include="ClsReels.cs" />
+    <Compile Include="ClsPastas.cs" />
+    <Compile Include="ClsStenciles.cs" />
+    <Compile Include="CompService.cs" />
     <Compile Include="frmConfirmar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -238,7 +240,8 @@
       <DependentUpon>FrmIncorrect.cs</DependentUpon>
     </Compile>
     <Compile Include="MPM_COMPARACIONES.cs" />
-    <Compile Include="Reels.cs" />
+    <Compile Include="Pastas.cs" />
+    <Compile Include="Stenciles.cs" />
     <Compile Include="ClsTelegram.cs" />
     <Compile Include="CrudReel.cs">
       <SubType>Form</SubType>

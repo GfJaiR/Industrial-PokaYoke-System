@@ -67,116 +67,161 @@ namespace Comparacion2024
             txtReelUserID.MaxLength = 8;
            
         }
+        private bool VerificarReelExistente(string reelID)
+        {
+             bool reelExists = false;
+    SqlConnection connection = new SqlConnection(connectionString);
+    try
+    {
+        string query = @"
+            SELECT COUNT(*) 
+            FROM (
+                SELECT ReelID FROM Stenciles WHERE ReelID = @ReelID
+                UNION ALL
+                SELECT ReelID FROM Pastas WHERE ReelID = @ReelID
+            ) AS CombinedResult";
+
+        SqlCommand cmd = new SqlCommand(query, connection);
+        cmd.Parameters.AddWithValue("@ReelID", reelID);
+
+        connection.Open();
+        int count = (int)cmd.ExecuteScalar();
+
+        reelExists = (count > 0);
+    }
+    catch (Exception ex)
+    {
+        // Maneja cualquier excepción que pueda ocurrir al conectarse a la base de datos
+        MessageBox.Show("Error al verificar el ReelID en la base de datos: " + ex.Message);
+    }
+    finally
+    {
+        connection.Close();
+    }
+
+    return reelExists;
+        }
         public void Comp()
         {
-   //         bool reelExists = VerificarReelExistente(txtReelID.Text);
-   //         if (reelExists)
-			//{
+			// Reiniciar valores de comparaciones antes de realizar nuevas comparaciones
+			//CompService.Instance.ComparacionPasta1Correcta = false;
+			//CompService.Instance.ComparacionPasta2Correcta = false;
+			//CompService.Instance.ComparacionStencilCorrecta = false;
+			bool reelExists = VerificarReelExistente(txtReelID.Text);
 
-			//}
-            if (txtFeeder.Text != "" && txtReelUserID.Text != "" && txtReelID.Text != "")
-            {
-                if (isStencil(txtReelID.Text) == true)
+			if (reelExists)
+			{
+                if (txtFeeder.Text != "" && txtReelUserID.Text != "" && txtReelID.Text != "")
                 {
-                    main.RegistrarAccion("Comparacion de Stencil");
-                }
-                else
-                {
-                    main.RegistrarAccion("Comparacion de Pasta");
-                }
-
-
-                string numpart = EnviarNumeroParte(txtReelID.Text);
-
-                if (numerosDeParte.Length >= 2)
-                {
-                    Pasta1 = numerosDeParte[0];
-                    Pasta2 = "";
-                    Stencil = numerosDeParte[1];
-                }
-
-                if (numerosDeParte.Length >= 3)
-                {
-                    Pasta1 = numerosDeParte[0];
-                    Pasta2 = numerosDeParte[1];
-                    Stencil = numerosDeParte[2];
-                }
-                if (datatable.Rows.Count > 0)
-                {
-
-                    // Filtra las filas del DataTable por el número de slot ingresado
-                    DataRow[] filasFiltradas = datatable.Select("Slot = '" + slot + "'");
-
-                    // Verifica si se encontraron filas con el número de slot especificado
-                    if (filasFiltradas.Length > 0)
+                    if (isStencil(txtReelID.Text) == true)
                     {
-                        // Itera sobre las filas filtradas
-                        foreach (DataRow fila in filasFiltradas)
-                        {
-                            // Obtiene el número de parte de la fila actual
-                            string numeroDeParteGrid = fila["Part No"].ToString();
+                        main.RegistrarAccion("Comparacion de Stencil");
+                    }
+                    else
+                    {
+                        main.RegistrarAccion("Comparacion de Pasta");
+                    }
 
-                            // Verifica si el número de parte coincide con el ingresado por el usuario
-                            if (numeroDeParteGrid == numpart)
+
+                    string numpart = EnviarNumeroParte(txtReelID.Text);
+
+                    if (numerosDeParte.Length >= 2)
+                    {
+                        Pasta1 = numerosDeParte[0];
+                        Pasta2 = "";
+                        Stencil = numerosDeParte[1];
+                    }
+
+                    if (numerosDeParte.Length >= 3)
+                    {
+                        Pasta1 = numerosDeParte[0];
+                        Pasta2 = numerosDeParte[1];
+                        Stencil = numerosDeParte[2];
+                    }
+                    if (datatable.Rows.Count > 0)
+                    {
+
+                        // Filtra las filas del DataTable por el número de slot ingresado
+                        DataRow[] filasFiltradas = datatable.Select("Slot = '" + slot + "'");
+
+                        // Verifica si se encontraron filas con el número de slot especificado
+                        if (filasFiltradas.Length > 0)
                             {
-                                Resul = "OK";
-                                if (isStencil(txtReelID.Text) == true)
-                                {
+                            // Itera sobre las filas filtradas
+                            foreach (DataRow fila in filasFiltradas)
+                            {
+                                // Obtiene el número de parte de la fila actual
+                                string numeroDeParteGrid = fila["Part No"].ToString();
 
+                                // Verifica si el número de parte coincide con el ingresado por el usuario
+                                if (numeroDeParteGrid == numpart)
+                                {
+                                    Resul = "OK";
+                                    if (Convert.ToInt32(slot) == 1)
+                                    {
+                                        CompService.Instance.ComparacionPasta1Correcta = true;
+                                        /*comparacionStencilCorrecta = true;*/ // Actualiza el estado de la comparación del stencil
+                                    }
+									if (Convert.ToInt32(slot) == 2)
+									{
+                                        CompService.Instance.ComparacionPasta2Correcta = true;
+                                    }
+									if (Convert.ToInt32(slot) == 3)
+									{
+                                        CompService.Instance.ComparacionStencilCorrecta = true;
+                                    }
+                                   
+                                    encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
+                                    FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
+                                    frm.ShowDialog();
+                                    break; // Sale del bucle ya que se encontró una coincidencia
+                                }
+                            }
+
+                            // Verifica si después de la iteración no se encontró ninguna coincidencia
+                            if (!encontrado)
+                            {
+                                if (Convert.ToInt32(slot) == 1)
+                                {
+                                    CompService.Instance.ComparacionPasta1Correcta = false;
                                     /*comparacionStencilCorrecta = true;*/ // Actualiza el estado de la comparación del stencil
                                 }
-                                else
+                                if (Convert.ToInt32(slot) == 2)
                                 {
-
-                                   /* comparacionPastaCorrecta = true;*/ // Actualiza el estado de la comparación de la pasta
+                                    CompService.Instance.ComparacionPasta2Correcta = false;
                                 }
-                                encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
-                                FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
+                                if (Convert.ToInt32(slot) == 3)
+                                {
+                                    CompService.Instance.ComparacionStencilCorrecta = false;
+                                }
+                                FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
                                 frm.ShowDialog();
-                                break; // Sale del bucle ya que se encontró una coincidencia
+                                MessageBox.Show(mensajeEscanear[contadormensaje]);
+                                //this.Close();
+                                tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
                             }
                         }
-
-                        // Verifica si después de la iteración no se encontró ninguna coincidencia
-                        if (!encontrado)
+                        else
                         {
-                            if (isStencil(txtReelID.Text) == true)
-                            {
-
-                              /*  comparacionStencilCorrecta = false;*/ // Actualiza el estado si la comparación falla
-                            }
-                            else
-                            {
-
-                                /*comparacionPastaCorrecta = false;*/ // Actualiza el estado si la comparación falla
-                            }
-                            FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
-                            frm.ShowDialog();
-                            MessageBox.Show(mensajeEscanear[contadormensaje]);
-                            //this.Close();
-                            tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
+                            // Si no se encontraron filas con el número de slot especificado
+                            //MessageBox.Show("No se encontraron datos para el Feeder Detectado.");
                         }
                     }
                     else
                     {
-                        // Si no se encontraron filas con el número de slot especificado
-                        //MessageBox.Show("No se encontraron datos para el Feeder Detectado.");
+                        // Si no hay datos en el DataGridView
+                        MessageBox.Show("No hay datos en el DataGridView.");
                     }
+                    comp.AgregarComparaciones(Convert.ToInt32(txtReelUserID.Text), nomEs, Pasta1, Pasta2, Stencil, DateTime.Now, Resul);
+
                 }
-                else
-                {
-                    // Si no hay datos en el DataGridView
-                    MessageBox.Show("No hay datos en el DataGridView.");
-                }
-                comp.AgregarComparaciones(Convert.ToInt32(txtReelUserID.Text), nomEs, Pasta1, Pasta2, Stencil, DateTime.Now, Resul);
-
-            }
-           
-
-
-
-
+            } 
+			else
+			{
+                frmagregarreel.ShowDialog();
+			}
         }
+            
         //public void SubscribeToValuesChanged()
         //{
 

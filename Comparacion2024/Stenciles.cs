@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Comparacion2024
 {
-    class Reels
+    class Stenciles
     {
             [Key]
             public int RegistroID { get; set; }

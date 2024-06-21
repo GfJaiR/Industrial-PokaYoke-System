@@ -15,9 +15,9 @@ namespace Comparacion2024
 		private bool isStencil;
 		public FrmIncorrect(bool stencil)
 		{
-			this.isStencil = stencil;
-			InitializeComponent();
 			
+			InitializeComponent();
+			this.isStencil = stencil;
 		}
 
 		private void FrmIncorrect_Load(object sender, EventArgs e)
@@ -36,6 +36,11 @@ namespace Comparacion2024
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+
+		private void timer2_Tick(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

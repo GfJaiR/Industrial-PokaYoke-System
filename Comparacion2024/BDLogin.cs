@@ -11,7 +11,8 @@ namespace Comparacion2024
     class BDLogin : DbContext
     {
         public DbSet<Usuario> Usuarios { get; set; }    
-        public DbSet<Reels> Reels { get; set; } 
+        public DbSet<Stenciles> Stenciles { get; set; }
+        public DbSet<Pastas> Pastas { get; set; }
         public DbSet<MPM_COMPARACIONES> MPM_COMPARACIONES { get; set; }
         // Puedes agregar DbSet para otras entidades como Roles si es necesario
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

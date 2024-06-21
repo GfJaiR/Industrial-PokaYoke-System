@@ -21,7 +21,7 @@ namespace Comparacion2024
         public bool ComparacionPastaCorrecta { get; set; }
         public bool ComparacionStencilCorrecta { get; set; }
         private int tiempoTranscurrido = 0;
-        CrudReel frm = new CrudReel();
+     
          //Usuario usuario = new Usuario();
         string nombreEstacion;
         string[] numerosDeParteArray;
@@ -36,17 +36,19 @@ namespace Comparacion2024
         UpdateLabelDelegate updateLabel;
         DataTable dataTable = new DataTable();
         SeaMAX sea = new SeaMAX();
-        ClsReels reel = new ClsReels();
+        ClsStenciles reel = new ClsStenciles();
         bool EsdeDosPastas = false;
         bool EsdeUnaPasta = false;
+        bool pasta1Correcta;
+        bool pasta2Correcta;
+        bool stencilCorrecta;
+      
         public frmMain(int? id, string nomus)
         {
             InitializeComponent();
-            frmReelCharge compForm = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 0);
-            
-            bool pasta1Correcta = compForm.ComparacionPasta1Correcta;
-            bool pasta2Correcta = compForm.ComparacionPasta2Correcta;
-            bool stencilCorrecta = compForm.ComparacionStencilCorrecta;
+            pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
+            pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
+            stencilCorrecta = CompService.Instance.ComparacionStencilCorrecta;
             updateLabel = new UpdateLabelDelegate(UpdateLabel);
             num = id;
             this.nombreusuario = nomus;
@@ -72,8 +74,8 @@ namespace Comparacion2024
             {
                nombreEstacion = File.ReadAllText(filePath);
                 // Actualiza el título de la forma principal o el nombre del programa
-                this.Text = $"BarTector - Estación: {nombreEstacion}";
-                label1.Text = $"BarTector - Estación: {nombreEstacion}";
+                this.Text = $"EBT - Estación: {nombreEstacion}";
+                label1.Text = $"EBT - Estación: {nombreEstacion}";
             }
             CenterFormOnScreen();
 
@@ -93,6 +95,26 @@ namespace Comparacion2024
                 baseDeDatosToolStripMenuItem.Visible = false;
             }
             //AjustarTamañoDataGridView();
+        }
+        public bool VerificarResultados()
+		{
+
+
+            if (EsdeDosPastas == true)
+            {
+                return CompService.Instance.ComparacionPasta1Correcta &&
+                       CompService.Instance.ComparacionPasta2Correcta &&
+                       CompService.Instance.ComparacionStencilCorrecta;
+            }
+            else if (EsdeUnaPasta == true)
+            {
+                return CompService.Instance.ComparacionPasta1Correcta &&
+                       CompService.Instance.ComparacionStencilCorrecta;
+            }
+            else
+            {
+                return false;
+            }
         }
         public void RegistrarAccion(string accion)
         {
@@ -188,18 +210,28 @@ namespace Comparacion2024
                                     //lblCiclos.Text = cont.ToString();
 
                                     // Decide qué conjunto de valores enviar a los outputs digitales
-                                          
-                                    if (collectedValues[3] == 0 && pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+                                    if (collectedValues[3] == 0)
+                                    {
+                                        Alarma.Stop();
+                                    }
+                                    else
+                                    {
+                                        Alarma.Start();
+                                    }
+                                    if (collectedValues[3] == 0 && pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0  )
 									{
-									
+
+                                        Alarma.Stop();
                                        pastvalues = collectedValues[3];
                                         cont++;
                                         updateLabel(cont.ToString());
                                         sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
                                         reel.DisminuirCantidad(ObtenerNumParte());
+                                        RefrescarDataGridView();
                                     }
 									else
                                     {
+                                        Alarma.Start();
                                         sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
                                     }
                                 }
@@ -211,16 +243,27 @@ namespace Comparacion2024
                                     UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
                                     UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
                                     UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
-                                    if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 )
+									if (collectedValues[3] == 0)
+									{
+                                        Alarma.Stop();
+									}
+									else
+									{
+                                        Alarma.Start();
+									}
+                                    if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 && VerificarResultados())
                                     {
+                                        Alarma.Stop();
                                         pastvalues = collectedValues[3];
                                         cont++;
                                         updateLabel(cont.ToString());
                                         sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
                                         reel.DisminuirCantidad(ObtenerNumParte());
+                                        RefrescarDataGridView();
                                     }
                                     else
                                     {
+                                        //Alarma.Start();
                                         sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
                                     }
                                 }
@@ -643,6 +686,58 @@ namespace Comparacion2024
                 MessageBox.Show("No hay datos cargados en el DataGridView.");
             }
         }
+        public void RefrescarDataGridView()
+        {
+            try
+            {
+                conexion.Open();
+                string query = "SELECT PartNo, ReelID, Quantity FROM Reels";
+                SqlCommand comando = new SqlCommand(query, conexion);
+                SqlDataReader reader = comando.ExecuteReader();
+
+                string lastPartNo = null;
+                string lastReelID = null;
+                string lastQuantity = null;
+
+                // Leer todas las filas y almacenar la última con cantidad
+                while (reader.Read())
+                {
+                    string partNo = reader["PartNo"].ToString();
+                    string reelID = reader["ReelID"].ToString();
+                    string quantity = reader["Quantity"].ToString();
+
+                    if (!string.IsNullOrEmpty(quantity) && quantity != "0")
+                    {
+                        lastPartNo = partNo;
+                        lastReelID = reelID;
+                        lastQuantity = quantity;
+                    }
+                }
+
+                reader.Close();
+
+                // Si se encontró una fila con cantidad, actualizar el DataGridView
+                if (!string.IsNullOrEmpty(lastQuantity) && lastQuantity != "0")
+                {
+                    foreach (DataGridViewRow row in dgvCarga.Rows)
+                    {
+                        if (row.Cells["Part No"].Value.ToString().Equals(lastPartNo))
+                        {
+                            row.Cells["ReelID"].Value = lastReelID;
+                            row.Cells["Quantity"].Value = lastQuantity;
+                            break;
+                        }
+                    }
+                }
+
+                conexion.Close();
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Error al refrescar el DataGridView: " + ex.Message);
+            }
+        }
+
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
         {
 
@@ -665,7 +760,7 @@ namespace Comparacion2024
             {
                 if (e.KeyCode == Keys.F4)
                 {
-                    CrudReel forma2 = new CrudReel();
+                    CrudReel forma2 = new CrudReel(this);
                     forma2.ShowDialog();
                 }
             }
@@ -834,12 +929,12 @@ namespace Comparacion2024
 
             // Verificar si han pasado 30 segundos (30,000 milisegundos)
             if (tiempoTranscurrido >= 30000)
-            { 
-                // Mostrar el MessageBox
-                //MessageBox.Show("ALARMA");
+            {
+				// Mostrar el MessageBox
+				
 
-                // Reiniciar el tiempo transcurrido
-                tiempoTranscurrido = 0;
+				// Reiniciar el tiempo transcurrido
+				tiempoTranscurrido = 0;
             }
         }
         private void StopThread()
@@ -932,7 +1027,7 @@ namespace Comparacion2024
 
 		private void baseDeDatosToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            CrudReel frm = new CrudReel();
+            CrudReel frm = new CrudReel(this);
             frm.ShowDialog();
 		}
 

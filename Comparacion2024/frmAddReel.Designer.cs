@@ -49,10 +49,6 @@ namespace Comparacion2024
 			this.label10 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.btnALL = new System.Windows.Forms.Button();
-			this.btnDecrease = new System.Windows.Forms.Button();
-			this.btnEqual = new System.Windows.Forms.Button();
-			this.btnAug = new System.Windows.Forms.Button();
 			this.btnGetValue = new System.Windows.Forms.Button();
 			this.txtValue2 = new System.Windows.Forms.TextBox();
 			this.label12 = new System.Windows.Forms.Label();
@@ -102,7 +98,8 @@ namespace Comparacion2024
 			this.txtReelID.Location = new System.Drawing.Point(122, 33);
 			this.txtReelID.Name = "txtReelID";
 			this.txtReelID.Size = new System.Drawing.Size(185, 20);
-			this.txtReelID.TabIndex = 2;
+			this.txtReelID.TabIndex = 1;
+			this.txtReelID.TextChanged += new System.EventHandler(this.txtReelID_TextChanged);
 			// 
 			// label3
 			// 
@@ -127,7 +124,7 @@ namespace Comparacion2024
 			this.txtPartNo.Location = new System.Drawing.Point(122, 103);
 			this.txtPartNo.Name = "txtPartNo";
 			this.txtPartNo.Size = new System.Drawing.Size(185, 20);
-			this.txtPartNo.TabIndex = 6;
+			this.txtPartNo.TabIndex = 3;
 			// 
 			// label5
 			// 
@@ -143,7 +140,7 @@ namespace Comparacion2024
 			this.txtSupplierP.Location = new System.Drawing.Point(122, 141);
 			this.txtSupplierP.Name = "txtSupplierP";
 			this.txtSupplierP.Size = new System.Drawing.Size(185, 20);
-			this.txtSupplierP.TabIndex = 8;
+			this.txtSupplierP.TabIndex = 4;
 			// 
 			// label6
 			// 
@@ -159,7 +156,7 @@ namespace Comparacion2024
 			this.txtDateCode.Location = new System.Drawing.Point(122, 177);
 			this.txtDateCode.Name = "txtDateCode";
 			this.txtDateCode.Size = new System.Drawing.Size(185, 20);
-			this.txtDateCode.TabIndex = 10;
+			this.txtDateCode.TabIndex = 5;
 			// 
 			// label7
 			// 
@@ -175,7 +172,7 @@ namespace Comparacion2024
 			this.txtLotCode.Location = new System.Drawing.Point(122, 212);
 			this.txtLotCode.Name = "txtLotCode";
 			this.txtLotCode.Size = new System.Drawing.Size(185, 20);
-			this.txtLotCode.TabIndex = 12;
+			this.txtLotCode.TabIndex = 6;
 			// 
 			// label8
 			// 
@@ -191,7 +188,7 @@ namespace Comparacion2024
 			this.txtSupplier.Location = new System.Drawing.Point(122, 248);
 			this.txtSupplier.Name = "txtSupplier";
 			this.txtSupplier.Size = new System.Drawing.Size(185, 20);
-			this.txtSupplier.TabIndex = 14;
+			this.txtSupplier.TabIndex = 7;
 			// 
 			// label9
 			// 
@@ -206,8 +203,8 @@ namespace Comparacion2024
 			// 
 			this.txtQuantity.Location = new System.Drawing.Point(122, 287);
 			this.txtQuantity.Name = "txtQuantity";
-			this.txtQuantity.Size = new System.Drawing.Size(83, 20);
-			this.txtQuantity.TabIndex = 16;
+			this.txtQuantity.Size = new System.Drawing.Size(185, 20);
+			this.txtQuantity.TabIndex = 8;
 			// 
 			// label10
 			// 
@@ -230,10 +227,6 @@ namespace Comparacion2024
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.btnALL);
-			this.groupBox2.Controls.Add(this.btnDecrease);
-			this.groupBox2.Controls.Add(this.btnEqual);
-			this.groupBox2.Controls.Add(this.btnAug);
 			this.groupBox2.Controls.Add(this.btnGetValue);
 			this.groupBox2.Controls.Add(this.txtValue2);
 			this.groupBox2.Controls.Add(this.label12);
@@ -265,42 +258,6 @@ namespace Comparacion2024
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Almacenar";
 			// 
-			// btnALL
-			// 
-			this.btnALL.Location = new System.Drawing.Point(277, 287);
-			this.btnALL.Name = "btnALL";
-			this.btnALL.Size = new System.Drawing.Size(30, 20);
-			this.btnALL.TabIndex = 34;
-			this.btnALL.Text = "All";
-			this.btnALL.UseVisualStyleBackColor = true;
-			// 
-			// btnDecrease
-			// 
-			this.btnDecrease.Location = new System.Drawing.Point(211, 287);
-			this.btnDecrease.Name = "btnDecrease";
-			this.btnDecrease.Size = new System.Drawing.Size(25, 23);
-			this.btnDecrease.TabIndex = 34;
-			this.btnDecrease.Text = "<";
-			this.btnDecrease.UseVisualStyleBackColor = true;
-			// 
-			// btnEqual
-			// 
-			this.btnEqual.Location = new System.Drawing.Point(232, 287);
-			this.btnEqual.Name = "btnEqual";
-			this.btnEqual.Size = new System.Drawing.Size(23, 23);
-			this.btnEqual.TabIndex = 35;
-			this.btnEqual.Text = "=";
-			this.btnEqual.UseVisualStyleBackColor = true;
-			// 
-			// btnAug
-			// 
-			this.btnAug.Location = new System.Drawing.Point(252, 287);
-			this.btnAug.Name = "btnAug";
-			this.btnAug.Size = new System.Drawing.Size(19, 23);
-			this.btnAug.TabIndex = 36;
-			this.btnAug.Text = ">";
-			this.btnAug.UseVisualStyleBackColor = true;
-			// 
 			// btnGetValue
 			// 
 			this.btnGetValue.Location = new System.Drawing.Point(241, 391);
@@ -315,7 +272,7 @@ namespace Comparacion2024
 			this.txtValue2.Location = new System.Drawing.Point(186, 393);
 			this.txtValue2.Name = "txtValue2";
 			this.txtValue2.Size = new System.Drawing.Size(49, 20);
-			this.txtValue2.TabIndex = 26;
+			this.txtValue2.TabIndex = 12;
 			// 
 			// label12
 			// 
@@ -331,7 +288,7 @@ namespace Comparacion2024
 			this.txtValue1.Location = new System.Drawing.Point(122, 393);
 			this.txtValue1.Name = "txtValue1";
 			this.txtValue1.Size = new System.Drawing.Size(58, 20);
-			this.txtValue1.TabIndex = 24;
+			this.txtValue1.TabIndex = 11;
 			// 
 			// ComboStorageStation
 			// 
@@ -339,7 +296,7 @@ namespace Comparacion2024
 			this.ComboStorageStation.Location = new System.Drawing.Point(122, 325);
 			this.ComboStorageStation.Name = "ComboStorageStation";
 			this.ComboStorageStation.Size = new System.Drawing.Size(185, 21);
-			this.ComboStorageStation.TabIndex = 23;
+			this.ComboStorageStation.TabIndex = 9;
 			// 
 			// comboCompany
 			// 
@@ -349,7 +306,7 @@ namespace Comparacion2024
 			this.comboCompany.Location = new System.Drawing.Point(122, 68);
 			this.comboCompany.Name = "comboCompany";
 			this.comboCompany.Size = new System.Drawing.Size(185, 21);
-			this.comboCompany.TabIndex = 22;
+			this.comboCompany.TabIndex = 2;
 			this.comboCompany.Text = "CONTINENTAL";
 			// 
 			// label11
@@ -366,7 +323,7 @@ namespace Comparacion2024
 			this.txtSlot.Location = new System.Drawing.Point(122, 360);
 			this.txtSlot.Name = "txtSlot";
 			this.txtSlot.Size = new System.Drawing.Size(185, 20);
-			this.txtSlot.TabIndex = 20;
+			this.txtSlot.TabIndex = 10;
 			this.txtSlot.Text = "0";
 			// 
 			// label13
@@ -484,9 +441,6 @@ namespace Comparacion2024
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnDecrease;
-        private System.Windows.Forms.Button btnEqual;
-        private System.Windows.Forms.Button btnAug;
         private System.Windows.Forms.Button btnGetValue;
         private System.Windows.Forms.TextBox txtValue2;
         private System.Windows.Forms.Label label12;
@@ -502,6 +456,5 @@ namespace Comparacion2024
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnALL;
     }
 }

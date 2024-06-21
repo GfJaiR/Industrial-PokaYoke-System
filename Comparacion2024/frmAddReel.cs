@@ -12,6 +12,7 @@ namespace Comparacion2024
 {
     public partial class frmAddReel : Form
     {
+        //private frmMain forma = new frmMain();
         public frmAddReel()
         {
             InitializeComponent();
@@ -38,14 +39,18 @@ namespace Comparacion2024
         }
         private bool VerificarReelExistente(string reelID)
         {
-            // Suponiendo que tienes una conexión a tu base de datos llamada 'conexionBD'
-            // y una consulta SQL para verificar si el ReelID existe en una tabla llamada 'Reels'
-
             bool reelExists = false;
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                string query = "SELECT COUNT(*) FROM Reels WHERE ReelID = @ReelID";
+                string query = @"
+            SELECT COUNT(*) 
+            FROM (
+                SELECT ReelID FROM Stenciles WHERE ReelID = @ReelID
+                UNION ALL
+                SELECT ReelID FROM Pastas WHERE ReelID = @ReelID
+            ) AS CombinedResult";
+
                 SqlCommand cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@ReelID", reelID);
 
@@ -64,7 +69,34 @@ namespace Comparacion2024
                 connection.Close();
             }
 
-            return reelExists;
+            return reelExists;  
+        }
+        public bool isStencil(string id)
+        {
+            bool stencil = false;
+            try
+            {
+                
+                if (id.Substring(0, 2) == "ST")
+                {
+                    stencil = true;
+                }
+                else if (id.Contains("@"))
+                {
+                    stencil = false;
+                }
+                else
+                {
+                    MessageBox.Show("ID Imposible de identificar como pasta o stencil");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("Error:" + ex);
+                //throw;
+            }
+            return stencil;
         }
         private void btnOK_Click(object sender, EventArgs e)
         {
@@ -74,8 +106,9 @@ namespace Comparacion2024
             string reelID = txtReelID.Text;
           
             int cant;
-            CrudReel frmreel = new CrudReel();
-            ClsReels newreel = new ClsReels();
+          
+            ClsStenciles newstencil = new ClsStenciles();
+            ClsPastas newpasta = new ClsPastas();
             try
             {
                 if (reelExists)
@@ -98,7 +131,7 @@ namespace Comparacion2024
                             {
                                 numerosinprefijo = txtPartNo.Text.Substring(1);
                             }
-
+							
                             if (txtQuantity.Text == "")
 					            {
                                     cant = 0;
@@ -107,10 +140,12 @@ namespace Comparacion2024
 							{
                                 cant = Convert.ToInt32(txtQuantity.Text);
 							}
-                                if (newreel.AgregarReel(NoUsuario, reelID, numerosinprefijo, cant))
+							if (isStencil(txtReelID.Text))
+							{
+                                if (newstencil.AgregarStencil(NoUsuario, reelID, numerosinprefijo, cant))
                                 {
                                     // Éxito: el usuario se creó correctamente
-                                    MessageBox.Show("Reel agregado exitosamente");
+                                    MessageBox.Show("Stencil agregado exitosamente");
 
 
                                     //frmCrudReel.Actualizardgv();
@@ -118,6 +153,20 @@ namespace Comparacion2024
 
 
                                 }
+                            }
+							else if(isStencil(txtReelID.Text) == false)
+							{
+                                if (newpasta.AgregarPasta(NoUsuario, reelID, numerosinprefijo, cant))
+                                {
+                                    // Éxito: el usuario se creó correctamente
+                                    MessageBox.Show("Pasta agregada exitosamente");
+                                    //frmCrudReel.Actualizardgv();
+
+
+
+                                }
+                            }
+                                
 							else
 							{
 								MessageBox.Show("Error al agregar el reel, verifique los datos");
@@ -170,5 +219,18 @@ namespace Comparacion2024
                 btnNextUP.Enabled = true;
             }
         }
-    }
+
+		private void txtReelID_TextChanged(object sender, EventArgs e)
+		{
+			if (isStencil(txtReelID.Text))
+			{
+                txtQuantity.ReadOnly = false;
+            }
+			else
+			{
+              
+                txtQuantity.ReadOnly = true;
+            }
+		}
+	}
 }

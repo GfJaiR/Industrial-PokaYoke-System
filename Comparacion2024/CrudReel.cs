@@ -15,11 +15,13 @@ namespace Comparacion2024
 {
     public partial class CrudReel : Form
     {
+        private frmMain forma;
         DataView datav = new DataView();
         string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
         DataSet dataSet = new DataSet();
-        public CrudReel()
+        public CrudReel(frmMain form)
         {
+            this.forma = form;
             InitializeComponent();
         }
 
@@ -164,7 +166,7 @@ namespace Comparacion2024
                 int rowIndex = dgvReel.SelectedCells[0].RowIndex;
                 string registroID = dgvReel.Rows[rowIndex].Cells["RegistroID"].Value.ToString();
 
-                frmEditar formEditar = new frmEditar();
+                frmEditar formEditar = new frmEditar(forma);
                 formEditar.RegistroID = registroID;
                 formEditar.ShowDialog(); // Muestra el formulario como un diálogo modal.
 
