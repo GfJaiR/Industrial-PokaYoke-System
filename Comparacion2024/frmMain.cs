@@ -46,6 +46,7 @@ namespace Comparacion2024
         public frmMain(int? id, string nomus)
         {
             InitializeComponent();
+            dgvActions.CellFormatting += dgvActions_CellFormatting;
             pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
             pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
             stencilCorrecta = CompService.Instance.ComparacionStencilCorrecta;
@@ -68,7 +69,7 @@ namespace Comparacion2024
             dgvActions.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
             dgvActions.DefaultCellStyle.Font = new Font("Arial", 12);
             dgvActions.Columns.Add("Tiempo", "Tiempo");
-            dgvActions.Columns.Add("Accion", "Acción");
+            dgvActions.Columns.Add("Accion", "Accion");
            
             if (File.Exists(filePath))
             {
@@ -691,7 +692,7 @@ namespace Comparacion2024
             try
             {
                 conexion.Open();
-                string query = "SELECT PartNo, ReelID, Quantity FROM Reels";
+                string query = "SELECT PartNo, ReelID, Quantity FROM Stenciles";
                 SqlCommand comando = new SqlCommand(query, conexion);
                 SqlDataReader reader = comando.ExecuteReader();
 
@@ -789,6 +790,10 @@ namespace Comparacion2024
                     dataTable.Columns.Add("Quantity");
                     dataTable.Columns.Add("Status");
 
+                    int totalRows = lineas.Length;
+                    int initialRows = Math.Min(totalRows - 1, 2); // Al menos una fila se tomará de Stenciles
+                    int currentRow = 0;
+
                     foreach (string linea in lineas)
                     {
                         string[] campos = linea.Split(',');
@@ -804,7 +809,18 @@ namespace Comparacion2024
                             string reelId = "Sin dar de alta";
                             string cantidad = "Sin Datos";
 
-                            string query = "SELECT ReelID, Quantity FROM Reels WHERE PartNo = @PartNo";
+                            string query;
+                            if (currentRow < initialRows)
+                            {
+                                // Obtener datos de la tabla Pastas para las primeras filas
+                                query = "SELECT ReelID, Quantity FROM Pastas WHERE PartNo = @PartNo";
+                            }
+                            else
+                            {
+                                // Obtener datos de la tabla Stenciles para las últimas filas
+                                query = "SELECT ReelID, Quantity FROM Stenciles WHERE PartNo = @PartNo";
+                            }
+
                             SqlCommand comando = new SqlCommand(query, conexion);
                             comando.Parameters.AddWithValue("@PartNo", campos[2]); // Part No
 
@@ -818,6 +834,7 @@ namespace Comparacion2024
 
                             // Agrega los datos al dataTable, incluyendo reelId y cantidad sean o no vacíos
                             dataTable.Rows.Add(new object[] { campos[0], campos[1], campos[2], campos[3], reelId, cantidad, "" });
+                            currentRow++;
                         }
                     }
 
@@ -974,31 +991,37 @@ namespace Comparacion2024
 
 		private void dgvCarga_CellFormatting_1(object sender, DataGridViewCellFormattingEventArgs e)
 		{
-
             // Verificar si la celda actual es de la columna "Status"
             if (dgvCarga.Columns[e.ColumnIndex].Name == "Status")
             {
+                // Verificar si la fila actual no está vacía
+                if (dgvCarga.Rows[e.RowIndex].IsNewRow)
+                {
+                    return; // Si es una fila nueva (vacía), salir del método
+                }
+
                 // Obtener el valor de la celda
                 string status = dgvCarga.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
 
                 // Verificar el valor y establecer el color de fondo y el color de texto según el valor
-                if (status == "✔")
-                {
-                    e.CellStyle.BackColor = Color.Green; // Cambiar a color verde para ✔
-                    e.CellStyle.ForeColor = Color.Green; // Texto en color verde para mayor visibilidad
-                }
                 if (status == "X")
                 {
-                    e.CellStyle.BackColor = Color.White; // Cambiar a color rojo para X
-                    e.CellStyle.ForeColor = Color.Red; // Texto en color rojo para mayor visibilidad
+                    e.CellStyle.BackColor = Color.LightCoral; // Cambiar a color rojo para X
+                    e.CellStyle.ForeColor = Color.Black; // Texto en color negro para mayor visibilidad
                 }
                 else
                 {
-                    // Restablecer el color de fondo y el color de texto predeterminados si no coincide con el valor deseado
-                    e.CellStyle.BackColor = dgvCarga.DefaultCellStyle.BackColor;
-                    e.CellStyle.ForeColor = dgvCarga.DefaultCellStyle.ForeColor;
+                    e.CellStyle.BackColor = Color.LimeGreen; // Cambiar a color verde para ✔
+                    e.CellStyle.ForeColor = Color.Black; // Texto en color negro para mayor visibilidad
                 }
+                //else
+                //{
+                //    // Restablecer el color de fondo y el color de texto predeterminados si no coincide con el valor deseado
+                //    e.CellStyle.BackColor = dgvCarga.DefaultCellStyle.BackColor;
+                //    e.CellStyle.ForeColor = dgvCarga.DefaultCellStyle.ForeColor;
+                //}
             }
+           
         }
 
 		private void label1_Click(object sender, EventArgs e)
@@ -1030,6 +1053,29 @@ namespace Comparacion2024
             CrudReel frm = new CrudReel(this);
             frm.ShowDialog();
 		}
+
+		private void dgvActions_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+		{
+            if (dgvActions.Columns[e.ColumnIndex].Name == "Accion")
+            {
+                string accion = e.Value as string;
+                if (accion != null)
+                {
+                    if (accion.Contains("INCORRECTA"))
+                    {
+                        e.CellStyle.BackColor = Color.LightCoral ;
+                    }
+                    else if (accion.Contains("CORRECTA"))
+                    {
+                        e.CellStyle.BackColor = Color.LightGreen;
+                    }
+                    else
+                    {
+                        e.CellStyle.BackColor = Color.White; // Color por defecto
+                    }
+                }
+            }
+        }
 
 		private void label2_Click(object sender, EventArgs e)
 		{

@@ -113,14 +113,7 @@ namespace Comparacion2024
 			{
                 if (txtFeeder.Text != "" && txtReelUserID.Text != "" && txtReelID.Text != "")
                 {
-                    if (isStencil(txtReelID.Text) == true)
-                    {
-                        main.RegistrarAccion("Comparacion de Stencil");
-                    }
-                    else
-                    {
-                        main.RegistrarAccion("Comparacion de Pasta");
-                    }
+                   
 
 
                     string numpart = EnviarNumeroParte(txtReelID.Text);
@@ -157,6 +150,7 @@ namespace Comparacion2024
                                 if (numeroDeParteGrid == numpart)
                                 {
                                     Resul = "OK";
+
                                     if (Convert.ToInt32(slot) == 1)
                                     {
                                         CompService.Instance.ComparacionPasta1Correcta = true;
@@ -170,7 +164,14 @@ namespace Comparacion2024
 									{
                                         CompService.Instance.ComparacionStencilCorrecta = true;
                                     }
-                                   
+                                    if (isStencil(txtReelID.Text) == true)
+                                    {
+                                        main.RegistrarAccion("Comparacion de Stencil - CORRECTA");
+                                    }
+                                    else
+                                    {
+                                        main.RegistrarAccion("Comparacion de Pasta - CORRECTA");
+                                    }
                                     encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
                                     FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
                                     frm.ShowDialog();
@@ -193,6 +194,14 @@ namespace Comparacion2024
                                 if (Convert.ToInt32(slot) == 3)
                                 {
                                     CompService.Instance.ComparacionStencilCorrecta = false;
+                                }
+                                if (isStencil(txtReelID.Text) == true)
+                                {
+                                    main.RegistrarAccion("Comparacion de Stencil - INCORRECTA");
+                                }
+                                else
+                                {
+                                    main.RegistrarAccion("Comparacion de Pasta - INCORRECTA");
                                 }
                                 FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
                                 frm.ShowDialog();
@@ -436,13 +445,23 @@ namespace Comparacion2024
        
         private string EnviarNumeroParte(string reelID)
         {
+            string a;
             
+
             try
             {
+				if (isStencil(reelID))
+				{
+                    a = "Stenciles"; 
+				}
+				else
+				{
+                    a = "Pastas";
+				}
                 string numeroParte;
                 SqlConnection connection = new SqlConnection(connectionString);
 
-                string query = "SELECT PartNo FROM Reels WHERE ReelID = @ReelID";
+                string query = "SELECT PartNo FROM " + a + " WHERE ReelID = @ReelID";
                 SqlCommand cmd = new SqlCommand(query, connection);
                 cmd.Parameters.AddWithValue("@ReelID", reelID);
 

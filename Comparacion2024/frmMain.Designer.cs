@@ -188,6 +188,7 @@ namespace Comparacion2024
 			this.dgvActions.Name = "dgvActions";
 			this.dgvActions.Size = new System.Drawing.Size(776, 152);
 			this.dgvActions.TabIndex = 6;
+			this.dgvActions.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvActions_CellFormatting);
 			// 
 			// groupBox2
 			// 

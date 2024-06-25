@@ -39,7 +39,7 @@ namespace Comparacion2024
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnRefresh = new System.Windows.Forms.Button();
 			this.btnCargarStenciles = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
+			this.btnCargarPasta = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.dgvReel)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -137,23 +137,24 @@ namespace Comparacion2024
 			this.btnCargarStenciles.TabIndex = 11;
 			this.btnCargarStenciles.Text = "Cargar Stenciles";
 			this.btnCargarStenciles.UseVisualStyleBackColor = true;
+			this.btnCargarStenciles.Click += new System.EventHandler(this.btnCargarStenciles_Click);
 			// 
-			// button2
+			// btnCargarPasta
 			// 
-			this.button2.Location = new System.Drawing.Point(144, 12);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(127, 47);
-			this.button2.TabIndex = 12;
-			this.button2.Text = "Cargar Pastas";
-			this.button2.UseVisualStyleBackColor = true;
-	
+			this.btnCargarPasta.Location = new System.Drawing.Point(144, 12);
+			this.btnCargarPasta.Name = "btnCargarPasta";
+			this.btnCargarPasta.Size = new System.Drawing.Size(127, 47);
+			this.btnCargarPasta.TabIndex = 12;
+			this.btnCargarPasta.Text = "Cargar Pastas";
+			this.btnCargarPasta.UseVisualStyleBackColor = true;
+			this.btnCargarPasta.Click += new System.EventHandler(this.btnCargarPasta_Click);
 			// 
 			// CrudReel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(947, 391);
-			this.Controls.Add(this.button2);
+			this.Controls.Add(this.btnCargarPasta);
 			this.Controls.Add(this.btnCargarStenciles);
 			this.Controls.Add(this.btnRefresh);
 			this.Controls.Add(this.label2);
@@ -186,6 +187,6 @@ namespace Comparacion2024
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnRefresh;
 		private System.Windows.Forms.Button btnCargarStenciles;
-		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button btnCargarPasta;
 	}
 }

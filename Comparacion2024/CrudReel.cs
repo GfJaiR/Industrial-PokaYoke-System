@@ -18,6 +18,7 @@ namespace Comparacion2024
         private frmMain forma;
         DataView datav = new DataView();
         string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+        string currentTable = "Stenciles"; // Variable para rastrear la tabla actual
         DataSet dataSet = new DataSet();
         public CrudReel(frmMain form)
         {
@@ -49,19 +50,26 @@ namespace Comparacion2024
 
         private void CrudReel_Load(object sender, EventArgs e)
         {
-            CenterFormOnScreen();    
-            SqlConnection connection = new SqlConnection(connectionString);
-            string query = "SELECT * FROM Stenciles";
-            SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-            adapter.Fill(dataSet, "Stenciles");
-            dgvReel.DataSource = dataSet.Tables["Stenciles"];
+            CenterFormOnScreen();
+            LoadTable("Stenciles");
         }
-
+        private void LoadTable(string tableName)
+        {
+            currentTable = tableName;
+            SqlConnection connection = new SqlConnection(connectionString);
+            string query = $"SELECT * FROM {tableName}";
+            SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+            if (dataSet.Tables.Contains(tableName))
+            {
+                dataSet.Tables[tableName].Clear();
+            }
+            adapter.Fill(dataSet, tableName);
+            dgvReel.DataSource = dataSet.Tables[tableName];
+        }
         private void btnDelete_Click(object sender, EventArgs e)
         {
-             SqlConnection connection = new SqlConnection(connectionString);
-            DialogResult dr = MessageBox.Show("Estas seguro de eliminar el reel seleccionado?",
-                      "Mood Test", MessageBoxButtons.YesNo);
+            SqlConnection connection = new SqlConnection(connectionString);
+            DialogResult dr = MessageBox.Show("Estas seguro de eliminar el registro seleccionado?", "Mood Test", MessageBoxButtons.YesNo);
             switch (dr)
             {
                 case DialogResult.Yes:
@@ -70,42 +78,31 @@ namespace Comparacion2024
                         if (dgvReel.SelectedCells.Count > 0)
                         {
                             int rowIndex = dgvReel.SelectedCells[0].RowIndex;
-                            string Reelid = Convert.ToString(dgvReel.Rows[rowIndex].Cells["ReelID"].Value);
+                            string idColumnName = currentTable == "Stenciles" ? "RegistroID" : "RegristroID";
+                            string recordId = Convert.ToString(dgvReel.Rows[rowIndex].Cells[idColumnName].Value);
 
-                            // Ejecutar la consulta DELETE de forma segura
-                            string deleteQuery = "DELETE FROM Stenciles WHERE ReelID = @Reelid";
+                            string deleteQuery = $"DELETE FROM {currentTable} WHERE {idColumnName} = @RecordId";
                             SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
-                            deleteCommand.Parameters.AddWithValue("@Reelid", Reelid);
+                            deleteCommand.Parameters.AddWithValue("@RecordId", recordId);
 
                             connection.Open();
                             deleteCommand.ExecuteNonQuery();
                             connection.Close();
 
-                            // Actualizar el DataGridView
-                            string query = "SELECT * FROM Stenciles";
-                            // Limpiar el DataTable antes de cargar datos
-                            dataSet.Tables["Stenciles"].Clear();
+                            LoadTable(currentTable);
 
-                            // Cargar datos en el DataTable
-                            SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                            adapter.Fill(dataSet, "Stenciles");
-
-                            // Actualizar el DataGridView
-                            dgvReel.DataSource = dataSet.Tables["Stenciles"];
+                            MessageBox.Show("Registro eliminado");
                         }
-                        MessageBox.Show("Reel eliminado");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Error: ");
-                      
+                        MessageBox.Show("Error: " + ex.Message);
                     }
-
                     break;
                 case DialogResult.No:
                     break;
             }
-            
+
         }
 
         private void btnAgregar_Click(object sender, EventArgs e)
@@ -117,46 +114,23 @@ namespace Comparacion2024
         {
             try
             {
-                SqlConnection connection = new SqlConnection(connectionString);
-                // Actualizar el DataGridView
-                string query = "SELECT * FROM Stenciles";
-                // Limpiar el DataTable antes de cargar datos
-                dataSet.Tables["Stenciles"].Clear();
-
-                // Cargar datos en el DataTable
-                SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                adapter.Fill(dataSet, "Stenciles");
-
-                // Actualizar el DataGridView
-                dgvReel.DataSource = dataSet.Tables["Stenciles"];
+                LoadTable(currentTable);
             }
             catch (Exception)
             {
-
             }
-           
+
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
 
-            SqlConnection connection = new SqlConnection(connectionString);
-            // Actualizar el DataGridView
-            string query = "SELECT * FROM Stenciles";
-            // Limpiar el DataTable antes de cargar datos
-            dataSet.Tables["Stenciles"].Clear();
-
-            // Cargar datos en el DataTable
-            SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-            adapter.Fill(dataSet, "Stenciles");
-
-            // Actualizar el DataGridView
-            dgvReel.DataSource = dataSet.Tables["Stenciles"];
+            LoadTable(currentTable);
         }
 
         private void dgvReel_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            dgvReel.DataSource = dataSet.Tables["Stenciles"];
+            dgvReel.DataSource = dataSet.Tables[currentTable];
         }
 
 		private void btnModificar_Click(object sender, EventArgs e)
@@ -164,11 +138,12 @@ namespace Comparacion2024
             if (dgvReel.SelectedCells.Count > 0)
             {
                 int rowIndex = dgvReel.SelectedCells[0].RowIndex;
-                string registroID = dgvReel.Rows[rowIndex].Cells["RegistroID"].Value.ToString();
+                string idColumnName = currentTable == "Stenciles" ? "RegistroID" : "RegistroID";
+                string recordId = dgvReel.Rows[rowIndex].Cells[idColumnName].Value.ToString();
 
                 frmEditar formEditar = new frmEditar(forma);
-                formEditar.RegistroID = registroID;
-                formEditar.ShowDialog(); // Muestra el formulario como un diálogo modal.
+                formEditar.RegistroID = recordId;
+                formEditar.ShowDialog();
 
                 //Actualizardgv();
             }
@@ -179,21 +154,15 @@ namespace Comparacion2024
 
             try
             {
-                // Asegúrate de tener la tabla "Usuarios" en el DataSet
-                if (dataSet.Tables.Contains("Stenciles"))
+                if (dataSet.Tables.Contains(currentTable))
                 {
-                    // Utiliza el DataView que ya has creado
-                    datav = new DataView(dataSet.Tables["Stenciles"]);
-
-                    // Aplica el filtro al DataView
+                    datav = new DataView(dataSet.Tables[currentTable]);
                     datav.RowFilter = $"PartNo LIKE '%{txtBusqueda.Text}%'";
-
-                    // Vincula el DataView actualizado al DataGridView
                     dgvReel.DataSource = datav;
                 }
                 else
                 {
-                    MessageBox.Show("La tabla 'Usuarios' no está presente en el DataSet.");
+                    MessageBox.Show("La tabla no está presente en el DataSet.");
                 }
             }
             catch (Exception ex)
@@ -203,6 +172,14 @@ namespace Comparacion2024
 
         }
 
-		
+		private void btnCargarPasta_Click(object sender, EventArgs e)
+		{
+            LoadTable("Pastas");
+        }
+
+		private void btnCargarStenciles_Click(object sender, EventArgs e)
+		{
+            LoadTable("Stenciles");
+        }
 	}
 }

@@ -15,9 +15,9 @@ namespace Comparacion2024
 		private bool isStencil;
 		public FrmIncorrect(bool stencil)
 		{
-			
-			InitializeComponent();
 			this.isStencil = stencil;
+			InitializeComponent();
+			
 		}
 
 		private void FrmIncorrect_Load(object sender, EventArgs e)
