@@ -16,7 +16,7 @@ namespace Comparacion2024
     public partial class frmReelCharge : Form
     {
 
-        string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+        string connectionString = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
         private frmMain main;
         private DataTable datatable;
         private string[] numerosDeParte;
@@ -149,32 +149,28 @@ namespace Comparacion2024
                                 // Verifica si el número de parte coincide con el ingresado por el usuario
                                 if (numeroDeParteGrid == numpart)
                                 {
-                                    Resul = "OK";
+                                    
 
                                     if (Convert.ToInt32(slot) == 1)
                                     {
+                                        Resul = "Comparacion de Pasta 1 - CORRECTA";
                                         CompService.Instance.ComparacionPasta1Correcta = true;
                                         /*comparacionStencilCorrecta = true;*/ // Actualiza el estado de la comparación del stencil
                                     }
 									if (Convert.ToInt32(slot) == 2)
 									{
+                                        Resul = "Comparacion de Pasta 2 - CORRECTA";
                                         CompService.Instance.ComparacionPasta2Correcta = true;
                                     }
 									if (Convert.ToInt32(slot) == 3)
 									{
+                                        Resul = "Comparacion de Stencil - CORRECTA";
                                         CompService.Instance.ComparacionStencilCorrecta = true;
-                                    }
-                                    if (isStencil(txtReelID.Text) == true)
-                                    {
-                                        main.RegistrarAccion("Comparacion de Stencil - CORRECTA");
-                                    }
-                                    else
-                                    {
-                                        main.RegistrarAccion("Comparacion de Pasta - CORRECTA");
-                                    }
+                                    }                                  
+                                    main.RegistrarAccion(Resul);                                                                   
                                     encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
                                     FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
-                                    frm.ShowDialog();
+                                    frm.Show();
                                     break; // Sale del bucle ya que se encontró una coincidencia
                                 }
                             }
@@ -184,27 +180,23 @@ namespace Comparacion2024
                             {
                                 if (Convert.ToInt32(slot) == 1)
                                 {
+                                    Resul = "Comparacion de Pasta 1 - INCORRECTA";
                                     CompService.Instance.ComparacionPasta1Correcta = false;
                                     /*comparacionStencilCorrecta = true;*/ // Actualiza el estado de la comparación del stencil
                                 }
                                 if (Convert.ToInt32(slot) == 2)
                                 {
+                                    Resul = "Comparacion de Pasta 2 - INCORRECTA";
                                     CompService.Instance.ComparacionPasta2Correcta = false;
                                 }
                                 if (Convert.ToInt32(slot) == 3)
                                 {
+                                    Resul = "Comparacion de Stencil - INCORRECTA";
                                     CompService.Instance.ComparacionStencilCorrecta = false;
                                 }
-                                if (isStencil(txtReelID.Text) == true)
-                                {
-                                    main.RegistrarAccion("Comparacion de Stencil - INCORRECTA");
-                                }
-                                else
-                                {
-                                    main.RegistrarAccion("Comparacion de Pasta - INCORRECTA");
-                                }
+                                main.RegistrarAccion(Resul);
                                 FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
-                                frm.ShowDialog();
+                                frm.Show();
                                 MessageBox.Show(mensajeEscanear[contadormensaje]);
                                 //this.Close();
                                 tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
@@ -293,7 +285,20 @@ namespace Comparacion2024
                     }
 				else if (data[i] == 1 && cambio[i] == 1 && num1[i] ==0)
 					{
+						if (i == 0)
+						{
+                            CompService.Instance.ComparacionPasta1Correcta = false;
+                        }
+                        if (i == 1)
+                        {
+                            CompService.Instance.ComparacionPasta2Correcta = false;
+                        }
+                        if (i == 2)
+                        {
+                            CompService.Instance.ComparacionStencilCorrecta = false;
+                        }
                         MessageBox.Show(mensajeEscanear[i]);
+
                         num1[i]=1;    
 					}
 

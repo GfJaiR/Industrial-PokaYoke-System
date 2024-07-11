@@ -35,11 +35,12 @@ namespace Comparacion2024
 			this.btnDelete = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtBusqueda = new System.Windows.Forms.TextBox();
-			this.btnOK = new System.Windows.Forms.Button();
+			this.btnQuery = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
 			this.btnRefresh = new System.Windows.Forms.Button();
 			this.btnCargarStenciles = new System.Windows.Forms.Button();
 			this.btnCargarPasta = new System.Windows.Forms.Button();
+			this.txtQuery = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.dgvReel)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -55,9 +56,9 @@ namespace Comparacion2024
 			// 
 			// btnAgregar
 			// 
-			this.btnAgregar.Location = new System.Drawing.Point(277, 12);
+			this.btnAgregar.Location = new System.Drawing.Point(300, 12);
 			this.btnAgregar.Name = "btnAgregar";
-			this.btnAgregar.Size = new System.Drawing.Size(127, 47);
+			this.btnAgregar.Size = new System.Drawing.Size(138, 47);
 			this.btnAgregar.TabIndex = 1;
 			this.btnAgregar.Text = "Agregar Pasta o Stencil";
 			this.btnAgregar.UseVisualStyleBackColor = true;
@@ -65,9 +66,9 @@ namespace Comparacion2024
 			// 
 			// btnModificar
 			// 
-			this.btnModificar.Location = new System.Drawing.Point(410, 12);
+			this.btnModificar.Location = new System.Drawing.Point(444, 12);
 			this.btnModificar.Name = "btnModificar";
-			this.btnModificar.Size = new System.Drawing.Size(127, 47);
+			this.btnModificar.Size = new System.Drawing.Size(138, 47);
 			this.btnModificar.TabIndex = 2;
 			this.btnModificar.Text = "Modificar";
 			this.btnModificar.UseVisualStyleBackColor = true;
@@ -75,9 +76,9 @@ namespace Comparacion2024
 			// 
 			// btnDelete
 			// 
-			this.btnDelete.Location = new System.Drawing.Point(543, 12);
+			this.btnDelete.Location = new System.Drawing.Point(588, 12);
 			this.btnDelete.Name = "btnDelete";
-			this.btnDelete.Size = new System.Drawing.Size(127, 47);
+			this.btnDelete.Size = new System.Drawing.Size(138, 47);
 			this.btnDelete.TabIndex = 3;
 			this.btnDelete.Text = "Borrar";
 			this.btnDelete.UseVisualStyleBackColor = true;
@@ -96,19 +97,19 @@ namespace Comparacion2024
 			// 
 			this.txtBusqueda.Location = new System.Drawing.Point(57, 75);
 			this.txtBusqueda.Name = "txtBusqueda";
-			this.txtBusqueda.Size = new System.Drawing.Size(878, 20);
+			this.txtBusqueda.Size = new System.Drawing.Size(175, 20);
 			this.txtBusqueda.TabIndex = 5;
 			this.txtBusqueda.TextChanged += new System.EventHandler(this.txtBusqueda_TextChanged);
 			// 
-			// btnOK
+			// btnQuery
 			// 
-			this.btnOK.Location = new System.Drawing.Point(808, 12);
-			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(127, 47);
-			this.btnOK.TabIndex = 8;
-			this.btnOK.Text = "OK";
-			this.btnOK.UseVisualStyleBackColor = true;
-			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+			this.btnQuery.Location = new System.Drawing.Point(808, 75);
+			this.btnQuery.Name = "btnQuery";
+			this.btnQuery.Size = new System.Drawing.Size(127, 23);
+			this.btnQuery.TabIndex = 8;
+			this.btnQuery.Text = "Ejecutar Query";
+			this.btnQuery.UseVisualStyleBackColor = true;
+			this.btnQuery.Click += new System.EventHandler(this.btnOK_Click);
 			// 
 			// label2
 			// 
@@ -121,9 +122,9 @@ namespace Comparacion2024
 			// 
 			// btnRefresh
 			// 
-			this.btnRefresh.Location = new System.Drawing.Point(675, 12);
+			this.btnRefresh.Location = new System.Drawing.Point(732, 12);
 			this.btnRefresh.Name = "btnRefresh";
-			this.btnRefresh.Size = new System.Drawing.Size(127, 47);
+			this.btnRefresh.Size = new System.Drawing.Size(203, 47);
 			this.btnRefresh.TabIndex = 10;
 			this.btnRefresh.Text = "Refrescar Tabla";
 			this.btnRefresh.UseVisualStyleBackColor = true;
@@ -131,9 +132,9 @@ namespace Comparacion2024
 			// 
 			// btnCargarStenciles
 			// 
-			this.btnCargarStenciles.Location = new System.Drawing.Point(11, 12);
+			this.btnCargarStenciles.Location = new System.Drawing.Point(9, 12);
 			this.btnCargarStenciles.Name = "btnCargarStenciles";
-			this.btnCargarStenciles.Size = new System.Drawing.Size(127, 47);
+			this.btnCargarStenciles.Size = new System.Drawing.Size(141, 47);
 			this.btnCargarStenciles.TabIndex = 11;
 			this.btnCargarStenciles.Text = "Cargar Stenciles";
 			this.btnCargarStenciles.UseVisualStyleBackColor = true;
@@ -141,24 +142,32 @@ namespace Comparacion2024
 			// 
 			// btnCargarPasta
 			// 
-			this.btnCargarPasta.Location = new System.Drawing.Point(144, 12);
+			this.btnCargarPasta.Location = new System.Drawing.Point(156, 12);
 			this.btnCargarPasta.Name = "btnCargarPasta";
-			this.btnCargarPasta.Size = new System.Drawing.Size(127, 47);
+			this.btnCargarPasta.Size = new System.Drawing.Size(138, 47);
 			this.btnCargarPasta.TabIndex = 12;
 			this.btnCargarPasta.Text = "Cargar Pastas";
 			this.btnCargarPasta.UseVisualStyleBackColor = true;
 			this.btnCargarPasta.Click += new System.EventHandler(this.btnCargarPasta_Click);
+			// 
+			// txtQuery
+			// 
+			this.txtQuery.Location = new System.Drawing.Point(238, 75);
+			this.txtQuery.Name = "txtQuery";
+			this.txtQuery.Size = new System.Drawing.Size(564, 20);
+			this.txtQuery.TabIndex = 13;
 			// 
 			// CrudReel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(947, 391);
+			this.Controls.Add(this.txtQuery);
 			this.Controls.Add(this.btnCargarPasta);
 			this.Controls.Add(this.btnCargarStenciles);
 			this.Controls.Add(this.btnRefresh);
 			this.Controls.Add(this.label2);
-			this.Controls.Add(this.btnOK);
+			this.Controls.Add(this.btnQuery);
 			this.Controls.Add(this.txtBusqueda);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.btnDelete);
@@ -183,10 +192,11 @@ namespace Comparacion2024
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtBusqueda;
-        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnQuery;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnRefresh;
 		private System.Windows.Forms.Button btnCargarStenciles;
 		private System.Windows.Forms.Button btnCargarPasta;
+		private System.Windows.Forms.TextBox txtQuery;
 	}
 }

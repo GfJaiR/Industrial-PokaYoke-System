@@ -16,9 +16,9 @@ namespace Comparacion2024
         public frmAddReel()
         {
             InitializeComponent();
-            //this.frmCrudReel = crud;
-        }
-        string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+			//this.frmCrudReel = crud;
+		}
+        string connectionString = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
         private void frmAddReel_Load(object sender, EventArgs e)
         {
             CenterFormOnScreen();

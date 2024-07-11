@@ -14,10 +14,12 @@ namespace Comparacion2024
 	{
         private frmMain forma;
 		public string RegistroID { get; set; }
-        string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
-        public frmEditar(frmMain form)
+        string connectionString = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
+        string CurrentTable;
+        public frmEditar(frmMain form, string current)
 		{
             this.forma = form;
+            this.CurrentTable = current;
 			InitializeComponent();
 		}
 
@@ -26,7 +28,7 @@ namespace Comparacion2024
 
             // Asumiendo que ya tienes la cadena de conexión y la consulta SQL preparadas
           
-            string query = "UPDATE Reels SET UserID = @UserID, ReelID = @ReelID, PartNo = @PartNo, Quantity = @Quantity WHERE RegistroID = @RegistroID";
+            string query = "UPDATE " + CurrentTable + " SET UserID = @UserID, ReelID = @ReelID, PartNo = @PartNo, Quantity = @Quantity WHERE RegistroID = @RegistroID";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -72,7 +74,7 @@ namespace Comparacion2024
         private void CargarDatos()
         {
           
-            string query = "SELECT UserID, ReelID, PartNo, Quantity FROM Reels WHERE RegistroID = @RegistroID";
+            string query = "SELECT UserID, ReelID, PartNo, Quantity FROM " + CurrentTable + " WHERE RegistroID = @RegistroID";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {

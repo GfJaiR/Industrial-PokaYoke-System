@@ -19,7 +19,7 @@ namespace Comparacion2024
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true",
+                optionsBuilder.UseSqlServer("Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;",
                     options => options.EnableRetryOnFailure());
             }
         }

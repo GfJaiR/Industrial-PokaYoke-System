@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comparacion2024", "Comparacion2024\Comparacion2024.csproj", "{2E31D0E8-7DAD-4FF4-8517-B8D248D07A63}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup1", "Setup1\Setup1.vdproj", "{BC878589-E8C9-4CFA-9158-95CB88990075}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "InstaladorEBT2024", "InstaladorEBT2024\InstaladorEBT2024.vdproj", "{4F061C72-28F3-4780-BF0B-C80C0E97001E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{2E31D0E8-7DAD-4FF4-8517-B8D248D07A63}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E31D0E8-7DAD-4FF4-8517-B8D248D07A63}.Release|x86.ActiveCfg = Release|x86
 		{2E31D0E8-7DAD-4FF4-8517-B8D248D07A63}.Release|x86.Build.0 = Release|x86
-		{BC878589-E8C9-4CFA-9158-95CB88990075}.Debug|Any CPU.ActiveCfg = Debug
-		{BC878589-E8C9-4CFA-9158-95CB88990075}.Debug|x86.ActiveCfg = Debug
-		{BC878589-E8C9-4CFA-9158-95CB88990075}.Release|Any CPU.ActiveCfg = Release
-		{BC878589-E8C9-4CFA-9158-95CB88990075}.Release|x86.ActiveCfg = Release
+		{4F061C72-28F3-4780-BF0B-C80C0E97001E}.Debug|Any CPU.ActiveCfg = Debug
+		{4F061C72-28F3-4780-BF0B-C80C0E97001E}.Debug|x86.ActiveCfg = Debug
+		{4F061C72-28F3-4780-BF0B-C80C0E97001E}.Release|Any CPU.ActiveCfg = Release
+		{4F061C72-28F3-4780-BF0B-C80C0E97001E}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

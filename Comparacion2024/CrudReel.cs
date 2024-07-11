@@ -17,19 +17,58 @@ namespace Comparacion2024
     {
         private frmMain forma;
         DataView datav = new DataView();
-        string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+        string connectionString = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
         string currentTable = "Stenciles"; // Variable para rastrear la tabla actual
         DataSet dataSet = new DataSet();
+       
         public CrudReel(frmMain form)
         {
             this.forma = form;
+        
             InitializeComponent();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
+             string query = txtQuery.Text.Trim();
 
+            if (IsSelectQuery(query))
+            {
+                ExecuteQuery(query);
+            }
+            else
+            {
+                MessageBox.Show("Solo se permiten consultas de tipo SELECT.", "Consulta no válida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
+        private bool IsSelectQuery(string query)
+        {
+            // Verifica que la consulta comience con "SELECT"
+            return query.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void ExecuteQuery(string query)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+                        dgvReel.DataSource = dataTable;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al ejecutar la consulta: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         private void CenterFormOnScreen()
         {
@@ -51,6 +90,10 @@ namespace Comparacion2024
         private void CrudReel_Load(object sender, EventArgs e)
         {
             CenterFormOnScreen();
+            dgvReel.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvReel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvReel.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
+            dgvReel.DefaultCellStyle.Font = new Font("Arial", 12);
             LoadTable("Stenciles");
         }
         private void LoadTable(string tableName)
@@ -141,7 +184,7 @@ namespace Comparacion2024
                 string idColumnName = currentTable == "Stenciles" ? "RegistroID" : "RegistroID";
                 string recordId = dgvReel.Rows[rowIndex].Cells[idColumnName].Value.ToString();
 
-                frmEditar formEditar = new frmEditar(forma);
+                frmEditar formEditar = new frmEditar(forma, currentTable);
                 formEditar.RegistroID = recordId;
                 formEditar.ShowDialog();
 

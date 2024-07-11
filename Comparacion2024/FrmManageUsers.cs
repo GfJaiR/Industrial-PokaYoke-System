@@ -21,7 +21,7 @@ namespace Comparacion2024
         private ClsConex conexion;
         private string nombreusuario;
         // Establecer la cadena de conexión
-        string connectionString = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+        string connectionString = "Server=NGNAB001; Database=DBLoginMPM; User Id=hornosUser; Password=Conti123;";
         DataSet dataSet = new DataSet();
 
         public FrmManageUsers(int? idUsuario,string nombreus)
@@ -85,7 +85,7 @@ namespace Comparacion2024
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex.Message);
+                    MessageBox.Show("Error: " + ex);
                 }
             }
            
@@ -94,16 +94,16 @@ namespace Comparacion2024
         private void FrmManageUsers_Load(object sender, EventArgs e)
         {
             CenterFormOnScreen();
-            // Crear la conexión
-            SqlConnection connection = new SqlConnection(connectionString);
-            string query = "SELECT * FROM Usuarios";
-            SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-            adapter.Fill(dataSet, "Usuarios");
-            dgvUsuarios.DataSource = dataSet.Tables["Usuarios"];
-       
+			// Crear la conexión
+			SqlConnection connection = new SqlConnection(connectionString);
+			string query = "SELECT * FROM Usuarios";
+			SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+			adapter.Fill(dataSet, "Usuarios");
+			dgvUsuarios.DataSource = dataSet.Tables["Usuarios"];
 
-        }
-        private void CenterFormOnScreen()
+
+		}
+		private void CenterFormOnScreen()
         {
             // Obtener el tamaño de la pantalla
             int screenWidth = Screen.PrimaryScreen.Bounds.Width;

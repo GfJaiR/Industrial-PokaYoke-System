@@ -31,7 +31,7 @@ namespace Comparacion2024
         bool bypass = false,continuarlectura = true;
         int? num;
         string filePath = "nombreEstacion.txt";
-        SqlConnection conexion = new SqlConnection("Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true");
+        SqlConnection conexion = new SqlConnection("Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;");
         delegate void UpdateLabelDelegate(string message2);
         UpdateLabelDelegate updateLabel;
         DataTable dataTable = new DataTable();

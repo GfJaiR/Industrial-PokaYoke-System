@@ -30,7 +30,7 @@ namespace Comparacion2024
             // Verificar si hay al menos un número de parte
           
                 string query = "UPDATE Stenciles SET Quantity = Quantity - 1 WHERE PartNo = @partNo";
-                string connection = "Server=NGL0121W\\SQLEXPRESS01; Database=DBLoginMPM;Integrated Security=true";
+                string connection = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
 
                 using (SqlConnection connectionstring = new SqlConnection(connection))
                 {
