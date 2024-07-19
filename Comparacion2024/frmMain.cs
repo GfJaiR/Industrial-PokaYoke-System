@@ -178,6 +178,7 @@ namespace Comparacion2024
             int numberofchannels = 1;
             int pastvalues = 1;
             int cont = 0;
+
 			while (continuarlectura)
 			{
                 collectedValues.Clear(); //Limpiar la lista para reemplazar valores 

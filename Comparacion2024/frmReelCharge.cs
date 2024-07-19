@@ -170,7 +170,7 @@ namespace Comparacion2024
                                     main.RegistrarAccion(Resul);                                                                   
                                     encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
                                     FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
-                                    frm.Show();
+                                    frm.ShowDialog();
                                     break; // Sale del bucle ya que se encontró una coincidencia
                                 }
                             }
@@ -196,7 +196,7 @@ namespace Comparacion2024
                                 }
                                 main.RegistrarAccion(Resul);
                                 FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
-                                frm.Show();
+                                frm.ShowDialog();
                                 MessageBox.Show(mensajeEscanear[contadormensaje]);
                                 //this.Close();
                                 tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
@@ -285,18 +285,18 @@ namespace Comparacion2024
                     }
 				else if (data[i] == 1 && cambio[i] == 1 && num1[i] ==0)
 					{
-						if (i == 0)
-						{
-                            CompService.Instance.ComparacionPasta1Correcta = false;
-                        }
-                        if (i == 1)
-                        {
-                            CompService.Instance.ComparacionPasta2Correcta = false;
-                        }
-                        if (i == 2)
-                        {
-                            CompService.Instance.ComparacionStencilCorrecta = false;
-                        }
+						//if (i == 0)
+						//{
+      //                      CompService.Instance.ComparacionPasta1Correcta = false;
+      //                  }
+      //                  if (i == 1)
+      //                  {
+      //                      CompService.Instance.ComparacionPasta2Correcta = false;
+      //                  }
+      //                  if (i == 2)
+      //                  {
+      //                      CompService.Instance.ComparacionStencilCorrecta = false;
+      //                  }
                         MessageBox.Show(mensajeEscanear[i]);
 
                         num1[i]=1;    
