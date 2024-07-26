@@ -22,6 +22,7 @@ namespace Comparacion2024
         private void frmAddReel_Load(object sender, EventArgs e)
         {
             CenterFormOnScreen();
+            txtPartNo.Focus();
             txtSupplierP.ReadOnly = true;
             txtDateCode.ReadOnly = true;
             txtValue1.ReadOnly = true;
@@ -222,14 +223,15 @@ namespace Comparacion2024
 
 		private void txtReelID_TextChanged(object sender, EventArgs e)
 		{
-			if (isStencil(txtReelID.Text))
+			if (txtReelID.Text.Length == 35)
 			{
-                txtQuantity.ReadOnly = false;
+                txtQuantity.ReadOnly = true;
             }
+            
 			else
 			{
-              
-                txtQuantity.ReadOnly = true;
+
+                txtQuantity.ReadOnly = false;
             }
 		}
 	}

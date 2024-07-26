@@ -184,7 +184,7 @@ namespace Comparacion2024
                 string idColumnName = currentTable == "Stenciles" ? "RegistroID" : "RegistroID";
                 string recordId = dgvReel.Rows[rowIndex].Cells[idColumnName].Value.ToString();
 
-                frmEditar formEditar = new frmEditar(forma, currentTable);
+                frmEditar formEditar = new frmEditar(forma, currentTable,this);
                 formEditar.RegistroID = recordId;
                 formEditar.ShowDialog();
 

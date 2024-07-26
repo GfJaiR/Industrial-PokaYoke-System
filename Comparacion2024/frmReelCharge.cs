@@ -48,7 +48,10 @@ namespace Comparacion2024
             this.nomEs = nombreest;
             this.bypass = by;
             InitializeComponent();
-            this.main.DataUpdated += MainForm_DataUpdated;
+            if (!bypass)
+            {
+                this.main.DataUpdated += MainForm_DataUpdated;
+            }
             //SubscribeToValuesChanged();
             conexion = new ClsConex();
             
@@ -59,7 +62,7 @@ namespace Comparacion2024
         // En la forma receptora
         private void Form2_Load(object sender, EventArgs e)
         {
-           
+            txtReelUserID.Focus();
             CenterFormOnScreen();
             //main.OnDataRead += UpdateLabelBasedOnData;
           
@@ -222,173 +225,100 @@ namespace Comparacion2024
                 frmagregarreel.ShowDialog();
 			}
         }
-            
+
         //public void SubscribeToValuesChanged()
         //{
 
         //    main.ValuesChanged += FormOrigin_ValuesChanged;
         //}
-        private void MainForm_DataUpdated(byte[] data)
+        private async void MainForm_DataUpdated(byte[] data)
         {
-            //Actualiza la interfaz de usuario o realiza procesamientos mediante los valores de la lista con cada byte
-            if (this.InvokeRequired)
+            if (bypass)
             {
-                try
-                {
-                    this.Invoke(new Action(() => MainForm_DataUpdated(data)));
-                }
-                catch (ObjectDisposedException)
-                {
-
-                    return;
-                }
+                // Si bypass es verdadero, desuscribirse del evento y salir del método
+                this.main.DataUpdated -= MainForm_DataUpdated;
                 return;
             }
-            if (this.Visible && this.WindowState != FormWindowState.Minimized)
-			{
-                
-                //En el siguiente metodo se utiliza para despliegar valores en el slot como en el txt del feeder, al igual el que cuando detecte el sensor compare solo una vez 
-                //Thread.Sleep(5000);
-                for (int i = 0; i < 3; i++)
+            else
+            {
+                // Actualiza la interfaz de usuario o realiza procesamientos mediante los valores de la lista con cada byte
+                if (this.InvokeRequired)
                 {
-                    contadormensaje = i;
-                    if (data[i] == 0 && PastValues[i] == 1)
+                    try
                     {
-                        cambio[i] = 0;
-                        PastValues[i] = data[i];
+                        this.Invoke(new Action(() => MainForm_DataUpdated(data)));
                     }
-                    if (data[i] == 1 && PastValues[i] == 0)
+                    catch (ObjectDisposedException)
                     {
-                        cambio[i] = 1;
-                        PastValues[i] = data[i];
+                        return;
                     }
+                    return;
+                }
 
-                    if (data[i] == 0)
+                if (this.Visible && this.WindowState != FormWindowState.Minimized)
+                {
+                    for (int i = 0; i < 3; i++)
                     {
-                        slot = Convert.ToString(i + 1);
-                        txtFeeder.Text = Convert.ToString(i + 1);
-                        if (cambio[i] == 0)
+                        contadormensaje = i;
+                        if (data[i] == 0 && PastValues[i] == 1)
                         {
-                            if (bypass == true)
-                            {
-
-                            }
-                            else
-                            {
-                                Comp();
-                            }
-
+                            cambio[i] = 0;
+                            PastValues[i] = data[i];
+                        }
+                        if (data[i] == 1 && PastValues[i] == 0)
+                        {
                             cambio[i] = 1;
-                            num1 [i]= 0;
+                            PastValues[i] = data[i];
                         }
 
+                        if (data[i] == 0)
+                        {
+                            slot = Convert.ToString(i + 1);
+                            txtFeeder.Text = Convert.ToString(i + 1);
+
+                            if (cambio[i] == 0)
+                            {
+                                Comp();
+                                cambio[i] = 1;
+                                num1[i] = 0;
+                            }
+                        }
+                        else if (data[i] == 1 && cambio[i] == 1 && num1[i] == 0)
+                        {
+                            if (i == 0)
+                            {
+                                CompService.Instance.ComparacionPasta1Correcta = false;
+                            }
+                            if (i == 1)
+                            {
+                                CompService.Instance.ComparacionPasta2Correcta = false;
+                            }
+                            if (i == 2)
+                            {
+                                CompService.Instance.ComparacionStencilCorrecta = false;
+                            }
+
+                            await ShowMessageAsync(mensajeEscanear[i]);
+                            num1[i] = 1;
+                        }
                     }
-				else if (data[i] == 1 && cambio[i] == 1 && num1[i] ==0)
-					{
-						//if (i == 0)
-						//{
-      //                      CompService.Instance.ComparacionPasta1Correcta = false;
-      //                  }
-      //                  if (i == 1)
-      //                  {
-      //                      CompService.Instance.ComparacionPasta2Correcta = false;
-      //                  }
-      //                  if (i == 2)
-      //                  {
-      //                      CompService.Instance.ComparacionStencilCorrecta = false;
-      //                  }
-                        MessageBox.Show(mensajeEscanear[i]);
-
-                        num1[i]=1;    
-					}
-
-
-
                 }
-               
-
-
             }
-
-		}
-      //  private void FormOrigin_ValuesChanged(byte[] newValues)
-      //  {
-           
-           
-           
-               
-            
-
-      //      // Verifica si la forma está visible y no minimizada.
-      //      if (this.Visible && this.WindowState != FormWindowState.Minimized)
-      //      {
-      //          Thread.Sleep(5000);
-      //          if (PastValues == 4 || PastValues == 20 || PastValues == 12 || PastValues == 28)
-      //          {
-      //              if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
-      //              { num0 = 0; }
-
-
-      //          }
-      //          if (newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 8 || newValues[0] == 24)
-      //          {
-      //              slot = "1";
-      //              txtFeeder.Text = "1";
-      //              if (num0 == 0)
-      //              {
-						//if (bypass == true)
-						//{
-
-						//}
-						//else
-						//{
-      //                      Comp();
-      //                  }
-                        
-      //                  num0 = 1;
-      //              }
-      //          }
-
-      //          if (PastValues == 8 || PastValues == 24 || PastValues == 12 || PastValues == 28)
-      //          {
-      //              if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
-      //              {
-      //                  num1 = 0;
-      //              }
-
-      //          }
-      //          if (newValues[0] == 4 || newValues[0] == 0 || newValues[0] == 16 || newValues[0] == 20)
-      //          {
-      //              txtFeeder.Text = "3";
-      //              slot = "3";
-      //              if (num1 == 0)
-      //              {
-						//if (bypass == true)
-						//{
-                            
-      //                  }
-						//else
-						//{
-      //                      Comp();
-      //                  }
-                       
-      //                  num1 = 1;
-      //              }
-
-      //          }
-      //          else
-      //          {
-      //              txtFeeder.Text = "";
-      //              slot = "";
-      //          }
-      //          PastValues = newValues[0];
-      //      }
-      //  }
-
-       
-
-
-       
+        }
+        private Task ShowMessageAsync(string message)
+        {
+            return Task.Run(() =>
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() => MessageBox.Show(message)));
+                }
+                else
+                {
+                    MessageBox.Show(message);
+                }
+            });
+        }
         private void ComboLabelID_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
@@ -501,35 +431,7 @@ namespace Comparacion2024
                 Comp();
             }
         }
-   //     public void Comparaciones()
-   //     {
-			//try
-			//{
-   //             reelnum = EnviarNumeroParte(txtReelID.Text);
-
-   //             //Verificar si el ReelID existe en la base de datos
-
-   //             bool reelExists = VerificarReelExistente(txtReelID.Text);
-   //             if (reelExists)
-   //             {
-
-   //                 frmConfirmar frmconf = new frmConfirmar(datatable, Convert.ToInt32(txtReelUserID.Text), numerosDeParte, reelnum, main, nomEs, isStencil(txtReelID.Text));
-   //                 frmconf.ShowDialog();
-   //             }
-   //             else
-   //             {
-   //                 // Abre otro formulario para dar de alta el Reel/Pasta
-   //                 AbrirFormularioAltaReel();
-   //             }
-   //         }
-			//catch (Exception)
-			//{
-   //             MessageBox.Show("Error, verifique los datos: ");
-             
-			//}
-           
-            
-   //     }
+ 
         private void txtReelUserID_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

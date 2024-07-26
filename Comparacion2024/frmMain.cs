@@ -52,6 +52,7 @@ namespace Comparacion2024
             stencilCorrecta = CompService.Instance.ComparacionStencilCorrecta;
             updateLabel = new UpdateLabelDelegate(UpdateLabel);
             num = id;
+            this.bypass = false;
             this.nombreusuario = nomus;
             
         }
@@ -220,7 +221,7 @@ namespace Comparacion2024
                                     {
                                         Alarma.Start();
                                     }
-                                    if (collectedValues[3] == 0 && pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0  )
+                                    if (pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0  )
 									{
 
                                         Alarma.Stop();
@@ -253,7 +254,7 @@ namespace Comparacion2024
 									{
                                         Alarma.Start();
 									}
-                                    if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 && VerificarResultados())
+                                    if ( collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 && VerificarResultados())
                                     {
                                         Alarma.Stop();
                                         pastvalues = collectedValues[3];
@@ -291,355 +292,8 @@ namespace Comparacion2024
             }
             
         }
-	//public event Action<byte[]> OnDataRead;
-		//public void InputRead()
-		//{
-
-
-
-		//    int start = 0;
-		//    int numberofchannels = 5;
-		//    byte[] Values = new byte[numberofchannels];
-		//    byte[] Values1 = { 1, 0, 0, 0, 0, 0, 0, 0 };
-		//    byte[] Values2 = { 0, 0, 0, 0, 0, 0, 0, 0 };
-		//    bool presente, pasado = false, cambio;
-		//    while(continuarlectura)
-		//    {
-
-		//        ValuesChanged?.Invoke(Values);
-
-		//        switch (sea.SM_ReadDigitalInputs(start, numberofchannels, Values))
-		//        {
-
-
-		//            case 1:
-		//                if (Values[0] % 2 == 0)
-		//                {
-		//                    // AREA 3 SENSORES CONTANDO LA ALARMA
-		//                    if (Values.Length == 5)
-		//                    {
-		//                        if (Values[0] == 0 || Values[0] == 8 || Values[0] == 4 || Values[0] == 12)
-		//                        {
-		//                            presente = true;
-		//                        }
-		//                        else
-		//                        { presente = false; }
-		//                        if (pasado == false && presente== true) 
-		//                        { cambio = true;
-		//                            Change?.Invoke(cambio);
-		//                        }
-		//                        else
-		//                        { cambio = false;
-		//                            Change?.Invoke(cambio);
-		//                        }
-
-		//                        if (Values[0] == 0)
-		//                        {
-		//                            try
-		//                            {
-		//                                //UpdateLabel2($" TODOS LOS SENSORES ACTIVOS ");
-		//                                UpdateStatusInGrid(0, "✔");
-		//                                UpdateStatusInGrid(1, "✔");
-		//                                sea.SM_WriteDigitalOutputs(start, numberofchannels, Values2);
-		//                                Alarma.Stop();
-		//                                frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
-		//                                if (cambio == true)
-		//                                {
-		//                                    if (forma.VerificarResultados())
-		//                                    {
-		//                                        reel.DisminuirCantidad(ObtenerNumParte());
-		//                                    }
-
-		//                                }
-
-		//                            }
-		//                            catch (Exception)
-		//                            {                                       
-		//                            }
-		//                        }
-		//                        if (Values[0] == 16)
-		//                        {
-		//                            try
-		//                            {
-		//                                //UpdateLabel2($" TODOS LOS SENSORES ACTIVOS ");
-		//                                UpdateStatusInGrid(0, "✔");
-		//                                UpdateStatusInGrid(1, "✔");
-		//                                sea.SM_WriteDigitalOutputs(start, numberofchannels, Values2);
-		//                                Alarma.Start();
-		//                                frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
-		//                                if (cambio == true)
-		//                                {
-		//                                    if (forma.VerificarResultados())
-		//                                    {
-		//                                        reel.DisminuirCantidad(ObtenerNumParte());
-		//                                    }
-
-		//                                }
-
-		//                            }
-		//                            catch (Exception)
-		//                            {
-		//                            }
-		//                        }
-		//                        if (Values[0] == 8)
-		//                        {
-		//                            //UpdateLabel2($" FALTA STENCIL ");                                 
-		//                            UpdateStatusInGrid(0, "✔");
-		//                            UpdateStatusInGrid(1, "X");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                            Alarma.Stop();
-
-		//                        }
-		//                        if (Values[0] == 24)
-		//                        {
-		//                            //UpdateLabel2($" FALTA STENCIL ");                                  
-		//                            UpdateStatusInGrid(0, "✔");
-		//                            UpdateStatusInGrid(1, "X");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                            Alarma.Start();
-		//                        }
-		//                        if (Values[0] == 4)
-		//                        {
-		//                            //UpdateLabel2($" FALTA PASTA ");                                 
-		//                            UpdateStatusInGrid(0, "X");
-		//                            UpdateStatusInGrid(1, "✔");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                            Alarma.Stop();
-		//                        }
-		//                        if (Values[0] == 20)
-		//                        {
-		//	//UpdateLabel2($" FALTA STENCIL ");
-		//	UpdateStatusInGrid(0, "X");
-		//	UpdateStatusInGrid(1, "✔");
-
-
-		//                            Alarma.Stop();
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        }
-		//                        if (Values[0] == 12)
-		//                        {
-		//                            //UpdateLabel2($" FALTAN PASTA Y STENCIL ");                                
-		//                           UpdateStatusInGrid(0, "X");
-		//                            UpdateStatusInGrid(1, "X");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                            Alarma.Stop();
-		//                        }
-		//                        if (Values[0] == 28)
-		//                        {
-		//                            //UpdateLabel2($" FALTAN  PASTA Y STENCIL ");                                
-		//                            UpdateStatusInGrid(0, "X");
-		//                            UpdateStatusInGrid(1, "X");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                            Alarma.Start();
-		//                        }
-		//                        if (presente == true)
-		//                        { pasado = true; }
-		//                        else
-		//                        { pasado = false; }
-
-		//                    }
-		//                }
-		//                else
-		//                {
-		//                    //AREA 4 SENSORES  
-		//                    if (Values[0] == 1 || Values[0] == 9 || Values[0] == 5 || Values[0] == 13 || Values[0] == 3 || Values[0] == 11 || Values[0] == 7 || Values[0] == 15)
-		//                    {
-		//                        presente = true;
-		//                    }
-		//                    else
-		//                    { presente = false; }
-
-		//                    if (pasado == false && presente == true)
-		//                    { cambio = true; }
-		//                    else
-		//                    { cambio = false; }
-
-		//                    if (Values[0] == 1)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA2");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-		//                    }
-		//                    if (Values[0] == 17)
-		//                    {
-		//                        //UpdateLabel2($" TODOS LOS SENSORES ACTIVOS ");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values2);
-		//                        Alarma.Start();
-		//                        frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
-		//                        if (cambio == true)
-		//                        {
-		//                            if (forma.VerificarResultados())
-		//                            {
-		//                                reel.DisminuirCantidad(ObtenerNumParte());
-		//                            }
-
-		//                        }
-		//                    }
-		//                    if (Values[0] == 9)
-		//                    {
-		//                        //UpdateLabel2($" FALTA STENCIL");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-
-		//                    }
-		//                    if (Values[0] == 25)
-		//                    {
-		//                        //UpdateLabel2($" FALTA STENCIL ");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 5)
-		//                    {
-		//                        try
-		//                        {
-		//                            //UpdateLabel2($" TODOS LOS SENSORES ACTIVOS ");
-		//                            UpdateStatusInGrid(0, "✔");
-		//                            UpdateStatusInGrid(1, "✔");
-		//                            UpdateStatusInGrid(2, "✔");
-		//                            sea.SM_WriteDigitalOutputs(start, numberofchannels, Values2);
-		//                            Alarma.Stop();
-		//                            frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
-		//                            if (cambio == true)
-		//                            {
-		//		if (forma.VerificarResultados())
-		//		{
-		//                                    reel.DisminuirCantidad(ObtenerNumParte());
-		//                                }
-
-		//                            }
-		//                        }
-		//                        catch (Exception)
-		//                        {                                   
-		//                        }                              
-		//                    }
-		//                    if (Values[0] == 21)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA1 ");
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 13)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA2 Y STENCIL ");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-
-		//                    }
-		//                    if (Values[0] == 29)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA2 Y STENCIL");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 3)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA1 Y PASTA2");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "X");
-
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-		//                    }
-		//                    if (Values[0] == 19)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA1");
-
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 11)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA Y STENCIL");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(3, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-		//                    }
-		//                    if (Values[0] == 27)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA Y STENCIL");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(0, "✔");
-		//                        UpdateStatusInGrid(3, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 7)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA1 ");
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "✔");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-
-		//                    }
-		//                    if (Values[0] == 23)
-		//                    {
-		//                        //UpdateLabel2($" FALTA PASTA1 Y PASTA2");
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "✔");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (Values[0] == 15)
-		//                    {
-		//                        //UpdateLabel2($" FALTAN TODOS LOS SENSORES");
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Stop();
-		//                    }
-		//                    if (Values[0] == 24)
-		//                    {
-		//                        //UpdateLabel2($" FALTAN TODOS LOS SENSORES");
-		//                        UpdateStatusInGrid(0, "X");
-		//                        UpdateStatusInGrid(1, "X");
-		//                        UpdateStatusInGrid(2, "X");
-		//                        sea.SM_WriteDigitalOutputs(start, numberofchannels, Values1);
-		//                        Alarma.Start();
-		//                    }
-		//                    if (presente == true)
-		//                    { pasado = true; }
-		//                    else
-		//                    { pasado = false; }
-
-		//                }
-		//                break;
-		//            case -1:
-		//                break;
-		//        }
-		//        Thread.Sleep(500);
-		//    }
-		//} 
+	
+	
 		public void CargarFormaComparaciones()
         {
             if (dgvCarga.Rows.Count > 0)
@@ -693,52 +347,78 @@ namespace Comparacion2024
             try
             {
                 conexion.Open();
-                string query = "SELECT PartNo, ReelID, Quantity FROM Stenciles";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                SqlDataReader reader = comando.ExecuteReader();
 
-                string lastPartNo = null;
-                string lastReelID = null;
-                string lastQuantity = null;
+                // Diccionario para almacenar los datos de Pastas
+                Dictionary<string, (string reelID, string quantity)> datosPastas = new Dictionary<string, (string reelID, string quantity)>();
 
-                // Leer todas las filas y almacenar la última con cantidad
-                while (reader.Read())
+                // Query para la tabla Pastas
+                string queryPastas = "SELECT PartNo, ReelID, Quantity FROM Pastas";
+                SqlCommand comandoPastas = new SqlCommand(queryPastas, conexion);
+                SqlDataReader readerPastas = comandoPastas.ExecuteReader();
+
+                while (readerPastas.Read())
                 {
-                    string partNo = reader["PartNo"].ToString();
-                    string reelID = reader["ReelID"].ToString();
-                    string quantity = reader["Quantity"].ToString();
-
-                    if (!string.IsNullOrEmpty(quantity) && quantity != "0")
-                    {
-                        lastPartNo = partNo;
-                        lastReelID = reelID;
-                        lastQuantity = quantity;
-                    }
+                    string partNo = readerPastas["PartNo"].ToString();
+                    string reelID = readerPastas["ReelID"].ToString();
+                    string quantity = readerPastas["Quantity"].ToString();
+                    datosPastas[partNo] = (reelID, quantity);
                 }
 
-                reader.Close();
+                readerPastas.Close();
 
-                // Si se encontró una fila con cantidad, actualizar el DataGridView
-                if (!string.IsNullOrEmpty(lastQuantity) && lastQuantity != "0")
+                // Variable para almacenar los datos de Stenciles
+                (string partNo, string reelID, string quantity) datosStencil = (null, null, null);
+
+                // Query para la tabla Stenciles
+                string queryStenciles = "SELECT PartNo, ReelID, Quantity FROM Stenciles";
+                SqlCommand comandoStenciles = new SqlCommand(queryStenciles, conexion);
+                SqlDataReader readerStenciles = comandoStenciles.ExecuteReader();
+
+                if (readerStenciles.Read())
                 {
-                    foreach (DataGridViewRow row in dgvCarga.Rows)
+                    datosStencil.partNo = readerStenciles["PartNo"].ToString();
+                    datosStencil.reelID = readerStenciles["ReelID"].ToString();
+                    datosStencil.quantity = readerStenciles["Quantity"].ToString();
+                }
+
+                readerStenciles.Close();
+                conexion.Close();
+
+                // Actualizar filas de Pastas en el DataGridView
+                foreach (DataGridViewRow row in dgvCarga.Rows)
+                {
+                    if (row.Cells["Part No"].Value != null)
                     {
-                        if (row.Cells["Part No"].Value.ToString().Equals(lastPartNo))
+                        string partNo = row.Cells["Part No"].Value.ToString();
+
+                        if (datosPastas.ContainsKey(partNo))
                         {
-                            row.Cells["ReelID"].Value = lastReelID;
-                            row.Cells["Quantity"].Value = lastQuantity;
-                            break;
+                            var datos = datosPastas[partNo];
+                            if (row.Cells["ReelID"].Value.ToString() != datos.reelID)
+                                row.Cells["ReelID"].Value = datos.reelID;
+                            if (row.Cells["Quantity"].Value.ToString() != datos.quantity)
+                                row.Cells["Quantity"].Value = datos.quantity;
+                        }
+                        else if (partNo == datosStencil.partNo)
+                        {
+                            if (row.Cells["ReelID"].Value.ToString() != datosStencil.reelID)
+                                row.Cells["ReelID"].Value = datosStencil.reelID;
+                            if (row.Cells["Quantity"].Value.ToString() != datosStencil.quantity)
+                                row.Cells["Quantity"].Value = datosStencil.quantity;
                         }
                     }
                 }
-
-                conexion.Close();
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Error al refrescar el DataGridView: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
+                if (conexion.State == ConnectionState.Open)
+                {
+                    conexion.Close();
+                }
             }
         }
+
 
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
         {

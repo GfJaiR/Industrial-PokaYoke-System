@@ -85,7 +85,7 @@ namespace Comparacion2024
 			this.groupBox1.Location = new System.Drawing.Point(24, 68);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(299, 62);
-			this.groupBox1.TabIndex = 2;
+			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
 			// 
@@ -301,7 +301,7 @@ namespace Comparacion2024
 			this.btnOkUp.Name = "btnOkUp";
 			this.btnOkUp.Size = new System.Drawing.Size(75, 23);
 			this.btnOkUp.TabIndex = 13;
-			this.btnOkUp.Text = " Ok/UP";
+			this.btnOkUp.Text = "OK";
 			this.btnOkUp.UseVisualStyleBackColor = true;
 			this.btnOkUp.Click += new System.EventHandler(this.btnOkUp_Click);
 			// 

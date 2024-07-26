@@ -13,11 +13,13 @@ namespace Comparacion2024
 	public partial class frmEditar : Form
 	{
         private frmMain forma;
+        private CrudReel formacrud;
 		public string RegistroID { get; set; }
         string connectionString = "Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;";
         string CurrentTable;
-        public frmEditar(frmMain form, string current)
+        public frmEditar(frmMain form, string current, CrudReel frm)
 		{
+            this.formacrud = frm;
             this.forma = form;
             this.CurrentTable = current;
 			InitializeComponent();
@@ -50,6 +52,7 @@ namespace Comparacion2024
                         if (result > 0)
                         {
                             MessageBox.Show("Datos actualizados correctamente.");
+                            formacrud.Actualizardgv();
                             forma.RefrescarDataGridView();
                         }
                         else
