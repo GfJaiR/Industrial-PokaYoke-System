@@ -35,7 +35,7 @@ namespace Comparacion2024
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-			this.Close();
+			//this.Close();
 		}
 
 		private void timer2_Tick(object sender, EventArgs e)

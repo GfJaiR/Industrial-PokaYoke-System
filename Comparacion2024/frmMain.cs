@@ -13,22 +13,24 @@ using System.Data.SqlClient;
 using System.IO;
 using Sealevel;
 using System.Threading;
+using System.Management;
+using System.IO.Ports;
  
 namespace Comparacion2024
 {
     public partial class frmMain : Form
     {
+        private ManagementEventWatcher usbWatcher;
+        private bool isDeviceConnected = false; // Variable para controlar el estado de conexión
+        private string connectedPort = null; // Mantener el puerto COM conectado
         public bool ComparacionPastaCorrecta { get; set; }
         public bool ComparacionStencilCorrecta { get; set; }
         private int tiempoTranscurrido = 0;
-     
-         //Usuario usuario = new Usuario();
         string nombreEstacion;
         string[] numerosDeParteArray;
         Thread Hilo;
-        int hola;
         private string nombreusuario;
-        bool bypass = false,continuarlectura = true;
+        bool bypass = false, continuarlectura = true;
         int? num;
         string filePath = "nombreEstacion.txt";
         SqlConnection conexion = new SqlConnection("Server=NGNAB001; Database=DBLoginMPM;User Id=hornosUser; Password=Conti123;");
@@ -42,10 +44,18 @@ namespace Comparacion2024
         bool pasta1Correcta;
         bool pasta2Correcta;
         bool stencilCorrecta;
-      
+        private bool deviceConnected = false;
+        private int handle = -1;
+        private System.Windows.Forms.Timer retryTimer;
+        private bool keepReading = true;
+        private ManagementEventWatcher arrivalWatcher;
+        private ManagementEventWatcher removalWatcher;
+        private string currentPort = string.Empty;
+        private readonly object connectionLock = new object();
         public frmMain(int? id, string nomus)
         {
             InitializeComponent();
+            InitializeDeviceWatcher();
             dgvActions.CellFormatting += dgvActions_CellFormatting;
             pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
             pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
@@ -54,10 +64,26 @@ namespace Comparacion2024
             num = id;
             this.bypass = false;
             this.nombreusuario = nomus;
-            
+
+            picturePasta1.Paint += PictureBox_Paint;
+                picturePasta2.Paint += PictureBox_Paint;
+                pictureStencil.Paint += PictureBox_Paint;
+
+            // Initialize and start the timer
+            updateTimer = new System.Windows.Forms.Timer();
+            updateTimer.Interval = 1000; // 1 second
+            updateTimer.Tick += updateTimer_Tick;
+            updateTimer.Start();
+
         }
+
+        
+
+      
         private void frmMain_Load(object sender, EventArgs e)
         {
+            DetectAndConnect();
+            // Verificación inicial de la conexión del dispositivo
             dgvCarga.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvActions.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvCarga.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -81,9 +107,8 @@ namespace Comparacion2024
             }
             CenterFormOnScreen();
 
-            Hilo = new Thread(InputRead);   
-            Hilo.Start();
-            SM_Handle();
+            
+           
             if (num == 1)
             {
                 administrarUsuariosToolStripMenuItem.Visible = true;
@@ -97,6 +122,142 @@ namespace Comparacion2024
                 baseDeDatosToolStripMenuItem.Visible = false;
             }
             //AjustarTamañoDataGridView();
+        }
+        private void InitializeDeviceWatcher()
+        {
+            // Watch for device arrivals
+            arrivalWatcher = new ManagementEventWatcher();
+            arrivalWatcher.EventArrived += new EventArrivedEventHandler(DeviceArrived);
+            arrivalWatcher.Query = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 2");
+            arrivalWatcher.Start();
+
+            // Watch for device removals
+            removalWatcher = new ManagementEventWatcher();
+            removalWatcher.EventArrived += new EventArrivedEventHandler(DeviceRemoved);
+            removalWatcher.Query = new WqlEventQuery("SELECT * FROM Win32_DeviceChangeEvent WHERE EventType = 3");
+            removalWatcher.Start();
+        }
+
+        private void DeviceArrived(object sender, EventArrivedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                string[] ports = GetSeaLevelPorts();
+                if (ports.Length > 0)
+                {
+                    DetectAndConnect();
+                }
+            });
+        }
+
+        private void DeviceRemoved(object sender, EventArrivedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                string[] ports = GetSeaLevelPorts();
+                if (ports.Length == 0 && deviceConnected)
+                {
+                    lock (connectionLock)
+                    {
+                        deviceConnected = false;
+                        StopInputReadThread();
+                        CloseHandle();
+                        UpdateLabel("Microcontrolador desconectado.");
+                    }
+                }
+            });
+        }
+
+        private void DetectAndConnect()
+        {
+            lock (connectionLock)
+            {
+                StopInputReadThread();
+                CloseHandle();
+
+                string[] ports = GetSeaLevelPorts();
+
+                foreach (string port in ports)
+                {
+                    try
+                    {
+                        handle = sea.SM_Open(port);
+                        if (handle >= 0)
+                        {
+                            deviceConnected = true;
+                            currentPort = port;
+                            UpdateLabel($"Conectado a {port}");
+                            StartInputReadThread();
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        UpdateLabel($"Error al intentar conectar con {port}: {ex.Message}");
+                    }
+                }
+
+                if (!deviceConnected)
+                {
+                    UpdateLabel("No se pudo conectar a ningún puerto.");
+                    StartRetryTimer();
+                }
+            }
+        }
+
+        private void StartInputReadThread()
+        {
+            keepReading = true;
+            Hilo = new Thread(InputRead);
+            Hilo.Start();
+        }
+
+        private void StopInputReadThread()
+        {
+            keepReading = false;
+            if (Hilo != null && Hilo.IsAlive)
+            {
+                Hilo.Join();  // Espera a que el hilo termine antes de continuar
+            }
+        }
+
+        private string[] GetSeaLevelPorts()
+        {
+            List<string> seaLevelPorts = new List<string>();
+
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Name LIKE '%(COM%'"))
+            {
+                foreach (var device in searcher.Get())
+                {
+                    string name = device.GetPropertyValue("Name").ToString();
+                    string portName = name.Substring(name.LastIndexOf("(COM")).Replace("(", string.Empty).Replace(")", string.Empty);
+                    if (name.Contains("SeaIO")) // nombre específico del dispositivo SeaLevel
+                    {
+                        seaLevelPorts.Add(portName);
+                    }
+                }
+            }
+
+            return seaLevelPorts.ToArray();
+        }
+      
+        private void StartRetryTimer()
+        {
+            if (retryTimer == null)
+            {
+                retryTimer = new System.Windows.Forms.Timer();
+                retryTimer.Interval = 5000; // Intentar cada 5 segundos
+                retryTimer.Tick += (s, e) => DetectAndConnect();
+            }
+            retryTimer.Start();
+        }
+        private void CloseHandle()
+        {
+            if (handle >= 0)
+            {
+                sea.SM_Close();
+                handle = -1;
+            }
         }
         public bool VerificarResultados()
 		{
@@ -153,11 +314,8 @@ namespace Comparacion2024
                 //MessageBox.Show("Índice de fila no válido.");
             }
         }
-        public int SM_Handle()
-        {
-            int handle = sea.SM_Open("COM6");
-            return handle;
-        }
+        
+        
         //public delegate void ValuesChangedEventHandler(byte[] newValues);
         //public event ValuesChangedEventHandler ValuesChanged;
         //public delegate void ChangeEventHandler(bool cambio);
@@ -170,6 +328,7 @@ namespace Comparacion2024
         }
         public void InputRead()
 		{
+          
             //frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
             List<byte> collectedValues = new List<byte>();
             byte[] Values1 = { 1, 0, 0, 0, 0, 0, 0, 0 };
@@ -182,113 +341,127 @@ namespace Comparacion2024
 
 			while (continuarlectura)
 			{
-                collectedValues.Clear(); //Limpiar la lista para reemplazar valores 
-                for (int h = 0; h < 4; h++)
-                {
-                    if (start == 4)
+				if (deviceConnected && handle >= 0)
+				{
+                    collectedValues.Clear(); //Limpiar la lista para reemplazar valores 
+                    for (int h = 0; h < 4; h++)
                     {
-                        start = 0;
-                    }
-                    try
-                    {
-                        byte[] Values = new byte[numberofchannels];
-                        int readResult = sea.SM_ReadDigitalInputs(start, numberofchannels, Values);
-                        if (readResult == 1)
+                        if (start == 4)
                         {
-                            // Procesa los valores solo cuando la lectura es exitosa
-                            for (int i = 0; i < numberofchannels; i++)
-                            {
-                                collectedValues.Add(Values[i]);  // Añade el valor leído a la lista
-                            }
-                            if (collectedValues.Count >= 4) // Asegúrate de tener suficientes datos para procesar
-                            {
-                                if (dgvCarga.Rows.Count <= 3)
-                                {
-                                    EsdeUnaPasta = true;
-                                    EsdeDosPastas = false;
-                                    OnDataUpdated(collectedValues.ToArray());
-                                    UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-                                    UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
-
-                                    //lblCiclos.Text = cont.ToString();
-
-                                    // Decide qué conjunto de valores enviar a los outputs digitales
-                                    if (collectedValues[3] == 0)
-                                    {
-                                        Alarma.Stop();
-                                    }
-                                    else
-                                    {
-                                        Alarma.Start();
-                                    }
-                                    if (pastvalues==1 && collectedValues[0] == 0 && collectedValues[2] == 0  )
-									{
-
-                                        Alarma.Stop();
-                                       pastvalues = collectedValues[3];
-                                        cont++;
-                                        updateLabel(cont.ToString());
-                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                        reel.DisminuirCantidad(ObtenerNumParte());
-                                        RefrescarDataGridView();
-                                    }
-									else
-                                    {
-                                        Alarma.Start();
-                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
-                                    }
-                                }
-                                if (dgvCarga.Rows.Count <= 4)
-                                {
-                                    EsdeDosPastas = true;
-                                    EsdeUnaPasta = false;
-                                    OnDataUpdated(collectedValues.ToArray());
-                                    UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-                                    UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
-                                    UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
-									if (collectedValues[3] == 0)
-									{
-                                        Alarma.Stop();
-									}
-									else
-									{
-                                        Alarma.Start();
-									}
-                                    if ( collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues==1 && VerificarResultados())
-                                    {
-                                        Alarma.Stop();
-                                        pastvalues = collectedValues[3];
-                                        cont++;
-                                        updateLabel(cont.ToString());
-                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                        reel.DisminuirCantidad(ObtenerNumParte());
-                                        RefrescarDataGridView();
-                                    }
-                                    else
-                                    {
-                                        //Alarma.Start();
-                                        sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
-                                    }
-                                }
-                             
-                            }
-
-                            // Más casos y manejo de errores
-
-                            if (collectedValues[3] == 1 && pastvalues == 0)
-                            {
-                                pastvalues = collectedValues[3];
-                            }
+                            start = 0;
                         }
+                        try
+                        {
+                            byte[] Values = new byte[numberofchannels];
+                            int readResult = sea.SM_ReadDigitalInputs(start, numberofchannels, Values);
+                            if (readResult >= 0)
+                            {
+                                // Procesa los valores solo cuando la lectura es exitosa
+                                for (int i = 0; i < numberofchannels; i++)
+                                {
+                                    collectedValues.Add(Values[i]);  // Añade el valor leído a la lista
+                                }
+                                if (collectedValues.Count >= 4) // Asegúrate de tener suficientes datos para procesar
+                                {
+                                    if (dgvCarga.Rows.Count <= 3)
+                                    {
+                                        EsdeUnaPasta = true;
+                                        EsdeDosPastas = false;
+                                        OnDataUpdated(collectedValues.ToArray());
+                                        UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                        UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
+
+                                        //lblCiclos.Text = cont.ToString();
+
+                                        // Decide qué conjunto de valores enviar a los outputs digitales
+                                        if (collectedValues[3] == 0)
+                                        {
+                                            Alarma.Stop();
+                                        }
+                                        else
+                                        {
+                                            Alarma.Start();
+                                        }
+                                        if (pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+                                        {
+
+                                            Alarma.Stop();
+                                            pastvalues = collectedValues[3];
+                                            cont++;
+                                            updateLabel(cont.ToString());
+                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                            reel.DisminuirCantidad(ObtenerNumParte());
+                                            RefrescarDataGridView();
+                                        }
+                                        else
+                                        {
+                                            Alarma.Start();
+                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                        }
+                                    }
+                                    if (dgvCarga.Rows.Count <= 4)
+                                    {
+                                        EsdeDosPastas = true;
+                                        EsdeUnaPasta = false;
+                                        OnDataUpdated(collectedValues.ToArray());
+                                        UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                        UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
+                                        UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
+                                        if (collectedValues[3] == 0)
+                                        {
+                                            Alarma.Stop();
+                                        }
+                                        else
+                                        {
+                                            Alarma.Start();
+                                        }
+                                        if (collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
+                                        {
+                                            Alarma.Stop();
+                                            pastvalues = collectedValues[3];
+                                            cont++;
+                                            updateLabel(cont.ToString());
+                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                            reel.DisminuirCantidad(ObtenerNumParte());
+                                            RefrescarDataGridView();
+                                        }
+                                        else
+                                        {
+                                            //Alarma.Start();
+                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                        }
+                                    }
+
+                                }
+
+                                // Más casos y manejo de errores
+
+                                if (collectedValues[3] == 1 && pastvalues == 0)
+                                {
+                                    pastvalues = collectedValues[3];
+                                }
+                            }
+							else if (readResult == -8)
+							{
+                                if (deviceConnected == true)
+                                {
+                                    UpdateLabel("Error CRC, reiniciando...");
+                                    Task.Run(() => DetectAndConnect());
+                                }
+								return;
+							}
+                        }
+                        catch (Exception ex)
+                        {
+                            //manejar o registrar la excepción
+                            //MessageBox.Show("Error: " + ex.Message);
+                        }
+                        start++;
                     }
-                    catch (Exception ex)
-                    {
-                        //manejar o registrar la excepción
-                     //MessageBox.Show("Error: " + ex.Message);
-                    }
-                    start++;
+                    Thread.Sleep(1000);
                 }
-                Thread.Sleep(1000);            
+
+                        
             }
             
         }
@@ -645,18 +818,21 @@ namespace Comparacion2024
         }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-           
-            
-                
-          
+
+            StopInputReadThread();
+            CloseHandle();
+            arrivalWatcher.Stop();
+            removalWatcher.Stop();
+
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Application.Restart();
-            StopThread();
-        
-           
+            //Application.Restart();
+            //StopThread();
+            //usbWatcher.Stop();
+
+
         }
 
 		private void estacionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -758,7 +934,50 @@ namespace Comparacion2024
             }
         }
 
-		private void label2_Click(object sender, EventArgs e)
+		private void updateTimer_Tick(object sender, EventArgs e)
+		{
+            // Update the state of the comparisons
+            pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
+            pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
+            stencilCorrecta = CompService.Instance.ComparacionStencilCorrecta;
+
+            // Invalidate the PictureBoxes to trigger a repaint
+            picturePasta1.Invalidate();
+            picturePasta2.Invalidate();
+            pictureStencil.Invalidate();
+        }
+        private void PictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            PictureBox pictureBox = sender as PictureBox;
+            bool isCorrect = false;
+
+            if (pictureBox == picturePasta1)
+                isCorrect = pasta1Correcta;
+            else if (pictureBox == picturePasta2)
+                isCorrect = pasta2Correcta;
+            else if (pictureBox == pictureStencil)
+                isCorrect = stencilCorrecta;
+
+            // Draw the circle
+            DrawCircle(e.Graphics, pictureBox.ClientRectangle, isCorrect);
+        }
+        private void DrawCircle(Graphics graphics, Rectangle rectangle, bool isCorrect)
+        {
+            int diameter = Math.Min(rectangle.Width, rectangle.Height) - 10;
+            int x = (rectangle.Width - diameter) / 2;
+            int y = (rectangle.Height - diameter) / 2;
+
+            Color fillColor = isCorrect ? Color.Green : Color.Red;
+            Color borderColor = Color.Black;
+
+            using (SolidBrush brush = new SolidBrush(fillColor))
+            using (Pen pen = new Pen(borderColor, 2))
+            {
+                graphics.FillEllipse(brush, x, y, diameter, diameter);
+                graphics.DrawEllipse(pen, x, y, diameter, diameter);
+            }
+        }
+        private void label2_Click(object sender, EventArgs e)
 		{
 			if (num == 1)
 			{

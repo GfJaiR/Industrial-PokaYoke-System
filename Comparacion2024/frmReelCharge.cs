@@ -439,7 +439,11 @@ namespace Comparacion2024
                 txtFeeder.Focus();
             }
         }
-
+        public void VaciarCampos()
+		{
+            txtReelUserID.Text = "";
+            txtReelID.Text = "";
+		}
 		private void txtReelID_TextChanged(object sender, EventArgs e)
 		{
 			

@@ -46,6 +46,9 @@ namespace Comparacion2024
 			this.dgvCarga = new System.Windows.Forms.DataGridView();
 			this.dgvActions = new System.Windows.Forms.DataGridView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.pictureStencil = new System.Windows.Forms.PictureBox();
+			this.picturePasta2 = new System.Windows.Forms.PictureBox();
+			this.picturePasta1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.lblMonitor = new System.Windows.Forms.Label();
@@ -56,12 +59,19 @@ namespace Comparacion2024
 			this.lblcycle = new System.Windows.Forms.Label();
 			this.lblBypass = new System.Windows.Forms.Label();
 			this.lblCiclos = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.updateTimer = new System.Windows.Forms.Timer(this.components);
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvCarga)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvActions)).BeginInit();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.SuspendLayout();
@@ -174,9 +184,9 @@ namespace Comparacion2024
 			this.dgvCarga.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dgvCarga.BackgroundColor = System.Drawing.Color.White;
 			this.dgvCarga.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvCarga.Location = new System.Drawing.Point(12, 164);
+			this.dgvCarga.Location = new System.Drawing.Point(12, 179);
 			this.dgvCarga.Name = "dgvCarga";
-			this.dgvCarga.Size = new System.Drawing.Size(776, 213);
+			this.dgvCarga.Size = new System.Drawing.Size(776, 198);
 			this.dgvCarga.TabIndex = 5;
 			this.dgvCarga.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvCarga_CellFormatting_1);
 			// 
@@ -193,6 +203,12 @@ namespace Comparacion2024
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.Color.Gray;
+			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.label6);
+			this.groupBox2.Controls.Add(this.label5);
+			this.groupBox2.Controls.Add(this.pictureStencil);
+			this.groupBox2.Controls.Add(this.picturePasta2);
+			this.groupBox2.Controls.Add(this.picturePasta1);
 			this.groupBox2.Controls.Add(this.pictureBox3);
 			this.groupBox2.Controls.Add(this.pictureBox2);
 			this.groupBox2.Controls.Add(this.lblMonitor);
@@ -205,9 +221,33 @@ namespace Comparacion2024
 			this.groupBox2.Controls.Add(this.lblCiclos);
 			this.groupBox2.Location = new System.Drawing.Point(0, 81);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(800, 68);
+			this.groupBox2.Size = new System.Drawing.Size(800, 92);
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
+			// 
+			// pictureStencil
+			// 
+			this.pictureStencil.Location = new System.Drawing.Point(754, 16);
+			this.pictureStencil.Name = "pictureStencil";
+			this.pictureStencil.Size = new System.Drawing.Size(40, 44);
+			this.pictureStencil.TabIndex = 19;
+			this.pictureStencil.TabStop = false;
+			// 
+			// picturePasta2
+			// 
+			this.picturePasta2.Location = new System.Drawing.Point(708, 16);
+			this.picturePasta2.Name = "picturePasta2";
+			this.picturePasta2.Size = new System.Drawing.Size(40, 44);
+			this.picturePasta2.TabIndex = 18;
+			this.picturePasta2.TabStop = false;
+			// 
+			// picturePasta1
+			// 
+			this.picturePasta1.Location = new System.Drawing.Point(662, 16);
+			this.picturePasta1.Name = "picturePasta1";
+			this.picturePasta1.Size = new System.Drawing.Size(40, 44);
+			this.picturePasta1.TabIndex = 17;
+			this.picturePasta1.TabStop = false;
 			// 
 			// pictureBox3
 			// 
@@ -231,7 +271,7 @@ namespace Comparacion2024
 			// 
 			this.lblMonitor.AutoSize = true;
 			this.lblMonitor.Font = new System.Drawing.Font("MS Reference Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblMonitor.Location = new System.Drawing.Point(394, 16);
+			this.lblMonitor.Location = new System.Drawing.Point(351, 16);
 			this.lblMonitor.Name = "lblMonitor";
 			this.lblMonitor.Size = new System.Drawing.Size(301, 40);
 			this.lblMonitor.TabIndex = 14;
@@ -322,6 +362,37 @@ namespace Comparacion2024
 			this.lblCiclos.TabIndex = 8;
 			this.lblCiclos.Text = "0";
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(659, 63);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(40, 13);
+			this.label5.TabIndex = 20;
+			this.label5.Text = "Pasta1";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(708, 63);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(40, 13);
+			this.label6.TabIndex = 21;
+			this.label6.Text = "Pasta2";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(755, 63);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(39, 13);
+			this.label7.TabIndex = 22;
+			this.label7.Text = "Stencil";
+			// 
+			// updateTimer
+			// 
+			this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -353,6 +424,9 @@ namespace Comparacion2024
 			((System.ComponentModel.ISupportInitialize)(this.dgvActions)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.ResumeLayout(false);
@@ -387,5 +461,12 @@ namespace Comparacion2024
 		private System.Windows.Forms.PictureBox pictureBox3;
 		private System.Windows.Forms.PictureBox pictureBox2;
 		private System.Windows.Forms.ToolStripMenuItem baseDeDatosToolStripMenuItem;
+		private System.Windows.Forms.PictureBox pictureStencil;
+		private System.Windows.Forms.PictureBox picturePasta2;
+		private System.Windows.Forms.PictureBox picturePasta1;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Timer updateTimer;
 	}
 }

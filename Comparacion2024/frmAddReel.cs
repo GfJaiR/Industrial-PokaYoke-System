@@ -99,6 +99,11 @@ namespace Comparacion2024
             }
             return stencil;
         }
+        public void VaciarCampos()
+		{
+            txtReelID.Text = "";
+            txtQuantity.Text = "";
+		}
         private void btnOK_Click(object sender, EventArgs e)
         {
             
@@ -170,7 +175,7 @@ namespace Comparacion2024
                                 
 							else
 							{
-								MessageBox.Show("Error al agregar el reel, verifique los datos");
+								MessageBox.Show("Error al agregar, verifique los datos");
 							}
 
 
@@ -223,7 +228,7 @@ namespace Comparacion2024
 
 		private void txtReelID_TextChanged(object sender, EventArgs e)
 		{
-			if (txtReelID.Text.Length == 35)
+			if (txtReelID.Text.Length == 35 && txtReelID.Text.Contains("@"))
 			{
                 txtQuantity.ReadOnly = true;
             }
