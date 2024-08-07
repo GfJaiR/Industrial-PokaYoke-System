@@ -398,7 +398,7 @@ namespace Comparacion2024
                                         {
                                             Alarma.Start();
                                         }
-                                        if (collectedvalues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+                                        if (collectedValues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
                                         {
 
                                             Alarma.Stop();

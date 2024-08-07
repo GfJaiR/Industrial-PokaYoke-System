@@ -210,12 +210,6 @@
     <Compile Include="ClsPastas.cs" />
     <Compile Include="ClsStenciles.cs" />
     <Compile Include="CompService.cs" />
-    <Compile Include="frmConfirmar.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmConfirmar.Designer.cs">
-      <DependentUpon>frmConfirmar.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmCorrect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -292,9 +286,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddReel.resx">
       <DependentUpon>frmAddReel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmConfirmar.resx">
-      <DependentUpon>frmConfirmar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmCorrect.resx">
       <DependentUpon>FrmCorrect.cs</DependentUpon>
