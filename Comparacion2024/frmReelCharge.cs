@@ -172,7 +172,7 @@ namespace Comparacion2024
                                     }                                  
                                     main.RegistrarAccion(Resul);                                                                   
                                     encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
-                                    FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text));
+                                    FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text),this);
                                     frm.ShowDialog();
                                     break; // Sale del bucle ya que se encontró una coincidencia
                                 }
@@ -198,9 +198,9 @@ namespace Comparacion2024
                                     CompService.Instance.ComparacionStencilCorrecta = false;
                                 }
                                 main.RegistrarAccion(Resul);
-                                FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text));
+                                FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text),this);
                                 frm.ShowDialog();
-                                MessageBox.Show(mensajeEscanear[contadormensaje]);
+                             //   MessageBox.Show(mensajeEscanear[contadormensaje]);
                                 //this.Close();
                                 tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
                             }
@@ -464,7 +464,7 @@ namespace Comparacion2024
             }
             else
             {
-					MessageBox.Show("ID Imposible de identificar como pasta o stencil");
+					ShowMessageAsync("ID Imposible de identificar como pasta o stencil");
 				}
             
 			}

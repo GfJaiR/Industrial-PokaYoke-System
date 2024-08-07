@@ -12,10 +12,12 @@ namespace Comparacion2024
 {
 	public partial class FrmCorrect : Form
 	{
+		private frmReelCharge formacomp;
 		private bool isStencil;
-		public FrmCorrect(bool stencil)
+		public FrmCorrect(bool stencil, frmReelCharge forma)
 		{
 			this.isStencil = stencil;
+			this.formacomp = forma;
 			InitializeComponent();
 			
 		}
@@ -36,6 +38,11 @@ namespace Comparacion2024
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 		//	this.Close();
+		}
+
+		private void FrmCorrect_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			formacomp.VaciarCampos();
 		}
 	}
 }

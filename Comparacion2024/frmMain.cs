@@ -47,7 +47,7 @@ namespace Comparacion2024
         private bool deviceConnected = false;
         private int handle = -1;
         private System.Windows.Forms.Timer retryTimer;
-        private bool keepReading = true;
+        private CancellationTokenSource cancellationTokenSource; // token para cancelar el hilo de inputread
         private ManagementEventWatcher arrivalWatcher;
         private ManagementEventWatcher removalWatcher;
         private string currentPort = string.Empty;
@@ -162,7 +162,7 @@ namespace Comparacion2024
                         deviceConnected = false;
                         StopInputReadThread();
                         CloseHandle();
-                        UpdateLabel("Microcontrolador desconectado.");
+                       // UpdateLabel("Microcontrolador desconectado.");
                     }
                 }
             });
@@ -186,20 +186,20 @@ namespace Comparacion2024
                         {
                             deviceConnected = true;
                             currentPort = port;
-                            UpdateLabel($"Conectado a {port}");
+                          //  UpdateLabel($"Conectado a {port}");
                             StartInputReadThread();
                             return;
                         }
                     }
                     catch (Exception ex)
                     {
-                        UpdateLabel($"Error al intentar conectar con {port}: {ex.Message}");
+                      //  UpdateLabel($"Error al intentar conectar con {port}: {ex.Message}");
                     }
                 }
 
                 if (!deviceConnected)
                 {
-                    UpdateLabel("No se pudo conectar a ningún puerto.");
+                  //  UpdateLabel("No se pudo conectar a ningún puerto.");
                     StartRetryTimer();
                 }
             }
@@ -207,17 +207,23 @@ namespace Comparacion2024
 
         private void StartInputReadThread()
         {
-            keepReading = true;
-            Hilo = new Thread(InputRead);
+            cancellationTokenSource = new CancellationTokenSource(); // Inicializar aquí
+            CancellationToken token = cancellationTokenSource.Token;
+            Hilo = new Thread(() => InputRead(token));
             Hilo.Start();
         }
 
         private void StopInputReadThread()
         {
-            keepReading = false;
-            if (Hilo != null && Hilo.IsAlive)
+            if (cancellationTokenSource != null)
             {
-                Hilo.Join();  // Espera a que el hilo termine antes de continuar
+                cancellationTokenSource.Cancel();
+                // Aquí en lugar de Join, usaremos un bucle de espera para evitar el bloqueo de la UI
+                while (Hilo != null && Hilo.IsAlive)
+                {
+                    Application.DoEvents();
+                }
+                cancellationTokenSource = null;
             }
         }
 
@@ -240,7 +246,7 @@ namespace Comparacion2024
 
             return seaLevelPorts.ToArray();
         }
-      
+
         private void StartRetryTimer()
         {
             if (retryTimer == null)
@@ -257,6 +263,16 @@ namespace Comparacion2024
             {
                 sea.SM_Close();
                 handle = -1;
+            }
+        }
+        private void StopAndReleaseWatcher(ManagementEventWatcher watcher)
+        {
+            if (watcher != null)
+            {
+                watcher.Stop();
+                watcher.EventArrived -= new EventArrivedEventHandler(DeviceArrived);
+                watcher.EventArrived -= new EventArrivedEventHandler(DeviceRemoved);
+                watcher.Dispose();
             }
         }
         public bool VerificarResultados()
@@ -326,7 +342,7 @@ namespace Comparacion2024
         {
             DataUpdated?.Invoke(data);
         }
-        public void InputRead()
+        public void InputRead(CancellationToken token)
 		{
           
             //frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
@@ -339,7 +355,7 @@ namespace Comparacion2024
             int pastvalues = 1;
             int cont = 0;
 
-			while (continuarlectura)
+			while (!token.IsCancellationRequested)
 			{
 				if (deviceConnected && handle >= 0)
 				{
@@ -382,7 +398,7 @@ namespace Comparacion2024
                                         {
                                             Alarma.Start();
                                         }
-                                        if (pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+                                        if (collectedvalues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
                                         {
 
                                             Alarma.Stop();
@@ -415,7 +431,7 @@ namespace Comparacion2024
                                         {
                                             Alarma.Start();
                                         }
-                                        if (collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
+                                        if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
                                         {
                                             Alarma.Stop();
                                             pastvalues = collectedValues[3];
@@ -445,7 +461,7 @@ namespace Comparacion2024
 							{
                                 if (deviceConnected == true)
                                 {
-                                    UpdateLabel("Error CRC, reiniciando...");
+                                   // UpdateLabel("Error CRC, reiniciando...");
                                     Task.Run(() => DetectAndConnect());
                                 }
 								return;
@@ -821,8 +837,8 @@ namespace Comparacion2024
 
             StopInputReadThread();
             CloseHandle();
-            arrivalWatcher.Stop();
-            removalWatcher.Stop();
+            StopAndReleaseWatcher(arrivalWatcher);
+            StopAndReleaseWatcher(removalWatcher);
 
         }
 
