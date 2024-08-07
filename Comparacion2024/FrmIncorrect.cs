@@ -47,7 +47,12 @@ namespace Comparacion2024
 
 		private void FrmIncorrect_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			formacomp.VaciarCampos();
+			//formacomp.VaciarCampos();
+		}
+
+		private void FrmIncorrect_FormClosed(object sender, FormClosedEventArgs e)
+		{
+		//	formacomp.VaciarCampos();
 		}
 	}
 }

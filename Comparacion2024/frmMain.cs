@@ -77,9 +77,27 @@ namespace Comparacion2024
 
         }
 
-        
 
-      
+        private void StopRetryTimer()
+        {
+            if (retryTimer != null)
+            {
+                retryTimer.Stop();
+                retryTimer.Dispose();
+                retryTimer = null;
+            }
+        }
+
+        private void StopUpdateTimer()
+        {
+            if (updateTimer != null)
+            {
+                updateTimer.Stop();
+                updateTimer.Dispose();
+                updateTimer = null;
+            }
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             DetectAndConnect();
@@ -342,11 +360,13 @@ namespace Comparacion2024
         {
             DataUpdated?.Invoke(data);
         }
-        public void InputRead(CancellationToken token)
+        public async void InputRead(CancellationToken token)
 		{
           
             //frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass);
             List<byte> collectedValues = new List<byte>();
+            List<byte> previousValues = new List<byte> { 0, 0, 0, 0 }; // guardar valores anteriores para verificar cambios
+
             byte[] Values1 = { 1, 0, 0, 0, 0, 0, 0, 0 };
            byte[] Values2 = { 0, 0, 0, 0, 0, 0, 0, 0 };
             int start = 0;
@@ -385,8 +405,17 @@ namespace Comparacion2024
                                         EsdeDosPastas = false;
                                         OnDataUpdated(collectedValues.ToArray());
                                         UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+										if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
+										{
+                                            CompService.Instance.ComparacionPasta1Correcta = false;
+                                            await ShowMessageAsync("Pasta1 Retirada, Es necesario volver a escanear");
+                                        }
                                         UpdateStatusInGrid(1, collectedValues[2] == 0 ? "✔" : "X");
-
+                                        if (collectedValues[2] == 1 && collectedValues[2] != previousValues[2])
+                                        {
+                                            CompService.Instance.ComparacionStencilCorrecta = false;
+                                            await ShowMessageAsync("Stencil Retirado, Es necesario volver a escanear");
+                                        }
                                         //lblCiclos.Text = cont.ToString();
 
                                         // Decide qué conjunto de valores enviar a los outputs digitales
@@ -421,9 +450,24 @@ namespace Comparacion2024
                                         EsdeUnaPasta = false;
                                         OnDataUpdated(collectedValues.ToArray());
                                         UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                        if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
+                                        {
+                                            CompService.Instance.ComparacionPasta1Correcta = false;
+                                            await ShowMessageAsync("Pasta1 Retirada, Es necesario volver a escanearla");
+                                        }
                                         UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
+                                        if (collectedValues[1] == 1 && collectedValues[1] != previousValues[1])
+                                        {
+                                            CompService.Instance.ComparacionPasta2Correcta = false;
+                                            await ShowMessageAsync("Pasta2 Retirada, Es necesario volver a escanearla");
+                                        }
                                         UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
-                                        if (collectedValues[3] == 0)
+                                        if (collectedValues[2] == 1 && collectedValues[2] != previousValues[2])
+                                        {
+                                            CompService.Instance.ComparacionStencilCorrecta = false;
+                                            await ShowMessageAsync("Stencil Retirado, Es necesario volver a escanearlo");
+                                        }
+                                        if (collectedValues[3] == 0 && collectedValues[3] != previousValues[3])
                                         {
                                             Alarma.Stop();
                                         }
@@ -448,6 +492,8 @@ namespace Comparacion2024
                                         }
                                     }
 
+                                    // Guardar los valores actuales como previos para la próxima iteración
+                                    previousValues = new List<byte>(collectedValues);
                                 }
 
                                 // Más casos y manejo de errores
@@ -462,7 +508,7 @@ namespace Comparacion2024
                                 if (deviceConnected == true)
                                 {
                                    // UpdateLabel("Error CRC, reiniciando...");
-                                    Task.Run(() => DetectAndConnect());
+                                  await Task.Run(() => DetectAndConnect());
                                 }
 								return;
 							}
@@ -481,9 +527,21 @@ namespace Comparacion2024
             }
             
         }
-	
-	
-		public void CargarFormaComparaciones()
+        private async Task ShowMessageAsync(string message)
+        {
+            var context = SynchronizationContext.Current;
+            if (context == null)
+            {
+                context = new SynchronizationContext();
+                SynchronizationContext.SetSynchronizationContext(context);
+            }
+            await Task.Run(() =>
+            {
+                context.Send(_ => MessageBox.Show(message), null);
+            });
+        }
+
+        public void CargarFormaComparaciones()
         {
             if (dgvCarga.Rows.Count > 0)
             {
@@ -514,12 +572,12 @@ namespace Comparacion2024
 				if (EsdeDosPastas == true)
 				{
                     frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 2);
-                    forma.ShowDialog();
+                    forma.Show();
                 }
 				else if (EsdeUnaPasta == true)
 				{
                     frmReelCharge forma = new frmReelCharge(dataTable, numerosDeParteArray, this, nombreEstacion, bypass, 1);
-                    forma.ShowDialog();
+                    forma.Show();
                 }
                
                 //forma.SubscribeToValuesChanged();
@@ -624,7 +682,7 @@ namespace Comparacion2024
                 if (e.KeyCode == Keys.F3)
                 {
                     frmAddReel forma1 = new frmAddReel();
-                    forma1.ShowDialog();
+                    forma1.Show();
                 }
             }
             if (num == 1)
@@ -632,7 +690,7 @@ namespace Comparacion2024
                 if (e.KeyCode == Keys.F4)
                 {
                     CrudReel forma2 = new CrudReel(this);
-                    forma2.ShowDialog();
+                    forma2.Show();
                 }
             }
             
@@ -775,7 +833,7 @@ namespace Comparacion2024
         private void administrarUsuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FrmManageUsers forma = new FrmManageUsers(num,nombreusuario);
-            forma.ShowDialog();
+            forma.Show();
         }
         private void CenterFormOnScreen()
         {
@@ -824,14 +882,8 @@ namespace Comparacion2024
 				tiempoTranscurrido = 0;
             }
         }
-        private void StopThread()
-        {
-            if (Hilo != null && Hilo.IsAlive)
-            {
-                Hilo.Abort(); // Puedes considerar métodos más seguros para detener el hilo
-                Hilo.Join();  // Espera a que el hilo termine antes de continuar
-            }
-        }
+    
+       
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
 
@@ -839,22 +891,21 @@ namespace Comparacion2024
             CloseHandle();
             StopAndReleaseWatcher(arrivalWatcher);
             StopAndReleaseWatcher(removalWatcher);
+            StopRetryTimer();
+            StopUpdateTimer();
 
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //Application.Restart();
-            //StopThread();
-            //usbWatcher.Stop();
-
+            Application.Restart();
 
         }
 
 		private void estacionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             FrmEstacion FORMA = new FrmEstacion();
-            FORMA.ShowDialog();
+            FORMA.Show();
 		}
 
 		private void dgvCarga_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -924,7 +975,7 @@ namespace Comparacion2024
 		private void baseDeDatosToolStripMenuItem_Click(object sender, EventArgs e)
 		{
             CrudReel frm = new CrudReel(this);
-            frm.ShowDialog();
+            frm.Show();
 		}
 
 		private void dgvActions_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)

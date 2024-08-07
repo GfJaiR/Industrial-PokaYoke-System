@@ -173,7 +173,7 @@ namespace Comparacion2024
                                     main.RegistrarAccion(Resul);                                                                   
                                     encontrado = true; // Actualiza la variable bandera para indicar que se encontró una coincidencia
                                     FrmCorrect frm = new FrmCorrect(isStencil(txtReelID.Text),this);
-                                    frm.ShowDialog();
+                                    frm.Show();
                                     break; // Sale del bucle ya que se encontró una coincidencia
                                 }
                             }
@@ -199,7 +199,7 @@ namespace Comparacion2024
                                 }
                                 main.RegistrarAccion(Resul);
                                 FrmIncorrect frm = new FrmIncorrect(isStencil(txtReelID.Text),this);
-                                frm.ShowDialog();
+                                frm.Show();
                              //   MessageBox.Show(mensajeEscanear[contadormensaje]);
                                 //this.Close();
                                 tel.Telegram(txtReelUserID.Text, nomEs, Pasta1, Pasta2, Stencil); // Llama al método Telegram ya que ninguna fila cumplió con la condición
@@ -217,13 +217,18 @@ namespace Comparacion2024
                         MessageBox.Show("No hay datos en el DataGridView.");
                     }
                     comp.AgregarComparaciones(Convert.ToInt32(txtReelUserID.Text), nomEs, Pasta1, Pasta2, Stencil, DateTime.Now, Resul);
-
+                    VaciarCampos();
                 }
             } 
+			else if(txtFeeder.Text == "" && txtReelUserID.Text == "" && txtReelID.Text == "")
+			{
+               
+			}
 			else
 			{
-                frmagregarreel.ShowDialog();
-			}
+                frmagregarreel.Show();
+            }
+
         }
 
         //public void SubscribeToValuesChanged()
@@ -231,12 +236,11 @@ namespace Comparacion2024
 
         //    main.ValuesChanged += FormOrigin_ValuesChanged;
         //}
-        private async void MainForm_DataUpdated(byte[] data)
+        private void MainForm_DataUpdated(byte[] data)
         {
             if (bypass)
             {
                 // Si bypass es verdadero, desuscribirse del evento y salir del método
-                this.main.DataUpdated -= MainForm_DataUpdated;
                 return;
             }
             else
@@ -285,20 +289,20 @@ namespace Comparacion2024
                         }
                         else if (data[i] == 1 && cambio[i] == 1 && num1[i] == 0)
                         {
-                            if (i == 0)
-                            {
-                                CompService.Instance.ComparacionPasta1Correcta = false;
-                            }
-                            if (i == 1)
-                            {
-                                CompService.Instance.ComparacionPasta2Correcta = false;
-                            }
-                            if (i == 2)
-                            {
-                                CompService.Instance.ComparacionStencilCorrecta = false;
-                            }
+                            //if (i == 0)
+                            //{
+                            //    CompService.Instance.ComparacionPasta1Correcta = false;
+                            //}
+                            //if (i == 1)
+                            //{
+                            //    CompService.Instance.ComparacionPasta2Correcta = false;
+                            //}
+                            //if (i == 2)
+                            //{
+                            //    CompService.Instance.ComparacionStencilCorrecta = false;
+                            //}
 
-                            await ShowMessageAsync(mensajeEscanear[i]);
+                            //await ShowMessageAsync(mensajeEscanear[i]);
                             num1[i] = 1;
                         }
                     }

@@ -75,6 +75,7 @@ namespace Comparacion2024
 			this.Name = "FrmCorrect";
 			this.Text = "CORRECTO";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmCorrect_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmCorrect_FormClosed);
 			this.Load += new System.EventHandler(this.FrmCorrect_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);

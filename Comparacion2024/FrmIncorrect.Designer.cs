@@ -80,6 +80,7 @@ namespace Comparacion2024
 			this.Name = "FrmIncorrect";
 			this.Text = "INCORRECTO";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmIncorrect_FormClosing);
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmIncorrect_FormClosed);
 			this.Load += new System.EventHandler(this.FrmIncorrect_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
