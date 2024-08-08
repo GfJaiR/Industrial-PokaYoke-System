@@ -12,6 +12,7 @@ namespace Comparacion2024
 {
 	public partial class frmEditar : Form
 	{
+        private string originalQuantity;
         private frmMain forma;
         private CrudReel formacrud;
 		public string RegistroID { get; set; }
@@ -28,21 +29,40 @@ namespace Comparacion2024
 		private void btnOK_Click(object sender, EventArgs e)
 		{
 
-            // Asumiendo que ya tienes la cadena de conexión y la consulta SQL preparadas
-          
-            string query = "UPDATE " + CurrentTable + " SET UserID = @UserID, ReelID = @ReelID, PartNo = @PartNo, Quantity = @Quantity WHERE RegistroID = @RegistroID";
+            // Prepara la consulta SQL
+            string query = "UPDATE " + CurrentTable + " SET UserID = @UserID, ReelID = @ReelID, PartNo = @PartNo, Quantity = @Quantity, LastQuantitySet = @LastQuantitySet WHERE RegistroID = @RegistroID";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // Aquí asignas los valores de los TextBox a los parámetros
+                    // Asigna los valores de los TextBox a los parámetros
                     command.Parameters.AddWithValue("@UserID", txtUserID.Text);
                     command.Parameters.AddWithValue("@ReelID", txtReelID.Text);
                     command.Parameters.AddWithValue("@PartNo", txtPartNo.Text);
                     command.Parameters.AddWithValue("@Quantity", txtQuantity.Text);
-                    command.Parameters.AddWithValue("@RegistroID", RegistroID);// Y así sucesivamente para los demás campos
-                                                                               // Repite para ReelID, PartNo, Quantity, y no olvides incluir RegistroID
+                    command.Parameters.AddWithValue("@RegistroID", RegistroID);
+
+                    // Verifica si txtQuantity ha cambiado
+                    if (txtQuantity.Text != originalQuantity)
+                    {
+                        command.Parameters.AddWithValue("@LastQuantitySet", originalQuantity);
+                    }
+                    else
+                    {
+                        // Si no ha cambiado, mantiene el valor actual de LastQuantitySet en la base de datos
+                        string getLastQuantityQuery = "SELECT LastQuantitySet FROM " + CurrentTable + " WHERE RegistroID = @RegistroID";
+
+                        using (SqlCommand getLastQuantityCommand = new SqlCommand(getLastQuantityQuery, connection))
+                        {
+                            getLastQuantityCommand.Parameters.AddWithValue("@RegistroID", RegistroID);
+                            connection.Open();
+                            object lastQuantity = getLastQuantityCommand.ExecuteScalar();
+                            connection.Close();
+
+                            command.Parameters.AddWithValue("@LastQuantitySet", lastQuantity ?? (object)DBNull.Value);
+                        }
+                    }
 
                     try
                     {
@@ -72,6 +92,7 @@ namespace Comparacion2024
 		private void frmEditar_Load(object sender, EventArgs e)
 		{
             CenterToScreen();
+            originalQuantity = txtQuantity.Text;
             CargarDatos();
 		}
         private void CargarDatos()

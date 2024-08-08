@@ -15,7 +15,8 @@ namespace Comparacion2024
             public string UserID { get; set; }
             public string ReelID { get; set; }
             public string PartNo { get; set; }
-            public int Quantity { get; set; }
+            public int Quantity { get; set; }         
+            public int LastQuantitySet { get; set; }
 
     }
 }

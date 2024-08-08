@@ -9,7 +9,7 @@ namespace Comparacion2024
 {
     class ClsStenciles
     {
-        public bool AgregarStencil(string userid, string reelid, string partno, int qu)
+        public bool AgregarStencil(string userid, string reelid, string partno, int qu,int lc)
         {
             Stenciles NuevoStencil = new Stenciles();
             using (BDLogin db = new BDLogin())
@@ -19,6 +19,7 @@ namespace Comparacion2024
                 NuevoStencil.ReelID = reelid;
                 NuevoStencil.PartNo = partno;
                 NuevoStencil.Quantity = qu;
+                NuevoStencil.LastQuantitySet = lc;
                 // Agregar el usuario a la tabla Usuarios
                 db.Stenciles.Add(NuevoStencil);
                 return db.SaveChanges() > 0;

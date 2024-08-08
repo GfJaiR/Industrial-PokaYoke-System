@@ -13,8 +13,10 @@ namespace Comparacion2024
     public partial class frmAddReel : Form
     {
         //private frmMain forma = new frmMain();
-        public frmAddReel()
+        string numempleado;
+        public frmAddReel(string num)
         {
+            this.numempleado = num;
             InitializeComponent();
 			//this.frmCrudReel = crud;
 		}
@@ -22,6 +24,7 @@ namespace Comparacion2024
         private void frmAddReel_Load(object sender, EventArgs e)
         {
             CenterFormOnScreen();
+            txtUserID.Text = numempleado;
             txtPartNo.Focus();
             txtSupplierP.ReadOnly = true;
             txtDateCode.ReadOnly = true;
@@ -148,7 +151,8 @@ namespace Comparacion2024
 							}
 							if (isStencil(txtReelID.Text))
 							{
-                                if (newstencil.AgregarStencil(NoUsuario, reelID, numerosinprefijo, cant))
+                                int lastcant = cant;
+                                if (newstencil.AgregarStencil(NoUsuario, reelID, numerosinprefijo, cant,lastcant))
                                 {
                                     // Éxito: el usuario se creó correctamente
                                     MessageBox.Show("Stencil agregado exitosamente");

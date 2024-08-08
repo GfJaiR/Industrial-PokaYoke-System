@@ -150,7 +150,7 @@ namespace Comparacion2024
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            frmAddReel forma = new frmAddReel();
+            frmAddReel forma = new frmAddReel("");
             forma.ShowDialog();
         }
         public void Actualizardgv()

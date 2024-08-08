@@ -338,6 +338,7 @@ namespace Comparacion2024
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmReelCharge_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmReelCharge_FormClosed);
 			this.Load += new System.EventHandler(this.Form2_Load);
+			this.TextChanged += new System.EventHandler(this.frmReelCharge_TextChanged);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);

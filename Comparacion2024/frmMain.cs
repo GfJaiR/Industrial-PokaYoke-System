@@ -19,12 +19,7 @@ using System.IO.Ports;
 namespace Comparacion2024
 {
     public partial class frmMain : Form
-    {
-        private ManagementEventWatcher usbWatcher;
-        private bool isDeviceConnected = false; // Variable para controlar el estado de conexión
-        private string connectedPort = null; // Mantener el puerto COM conectado
-        public bool ComparacionPastaCorrecta { get; set; }
-        public bool ComparacionStencilCorrecta { get; set; }
+    {         
         private int tiempoTranscurrido = 0;
         string nombreEstacion;
         string[] numerosDeParteArray;
@@ -399,14 +394,14 @@ namespace Comparacion2024
                                 }
                                 if (collectedValues.Count >= 4) // Asegúrate de tener suficientes datos para procesar
                                 {
-                                    if (dgvCarga.Rows.Count <= 3)
+                                    if (dgvCarga.Rows.Count == 3)
                                     {
                                         EsdeUnaPasta = true;
                                         EsdeDosPastas = false;
                                         OnDataUpdated(collectedValues.ToArray());
                                         UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-										if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
-										{
+                                        if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
+                                        {
                                             CompService.Instance.ComparacionPasta1Correcta = false;
                                             await ShowMessageAsync("Pasta1 Retirada, Es necesario volver a escanear");
                                         }
@@ -427,7 +422,7 @@ namespace Comparacion2024
                                         {
                                             Alarma.Start();
                                         }
-                                        if (collectedValues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0)
+                                        if (collectedValues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0 && VerificarResultados())
                                         {
 
                                             Alarma.Stop();
@@ -444,52 +439,77 @@ namespace Comparacion2024
                                             sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
                                         }
                                     }
-                                    if (dgvCarga.Rows.Count <= 4)
+                                    if (dgvCarga.Rows.Count == 4)
                                     {
                                         EsdeDosPastas = true;
                                         EsdeUnaPasta = false;
                                         OnDataUpdated(collectedValues.ToArray());
-                                        UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
-                                        if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
-                                        {
-                                            CompService.Instance.ComparacionPasta1Correcta = false;
-                                            await ShowMessageAsync("Pasta1 Retirada, Es necesario volver a escanearla");
+										if (bypass == true)
+										{
+                                            UpdateStatusInGrid(0,  "");
+                                            UpdateStatusInGrid(1, "");
+                                            UpdateStatusInGrid(2,  "");
+											if (bypass == true && VerificarResultados() && collectedValues[3] == 0 && pastvalues == 1)
+											{
+                                                Alarma.Stop();
+                                                pastvalues = collectedValues[3];
+                                                cont++;
+                                                updateLabel(cont.ToString());
+                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                                reel.DisminuirCantidad(ObtenerNumParte());
+                                                RefrescarDataGridView();
+                                            }
+											else
+											{
+                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                            }
+                                          
                                         }
-                                        UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
-                                        if (collectedValues[1] == 1 && collectedValues[1] != previousValues[1])
-                                        {
-                                            CompService.Instance.ComparacionPasta2Correcta = false;
-                                            await ShowMessageAsync("Pasta2 Retirada, Es necesario volver a escanearla");
+										else
+										{
+                                            UpdateStatusInGrid(0, collectedValues[0] == 0 ? "✔" : "X");
+                                            if (collectedValues[0] == 1 && collectedValues[0] != previousValues[0])
+                                            {
+                                                CompService.Instance.ComparacionPasta1Correcta = false;
+                                                await ShowMessageAsync("Pasta1 Retirada, Es necesario volver a escanearla");
+                                            }
+                                            UpdateStatusInGrid(1, collectedValues[1] == 0 ? "✔" : "X");
+                                            if (collectedValues[1] == 1 && collectedValues[1] != previousValues[1])
+                                            {
+                                                CompService.Instance.ComparacionPasta2Correcta = false;
+                                                await ShowMessageAsync("Pasta2 Retirada, Es necesario volver a escanearla");
+                                            }
+                                            UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
+                                            if (collectedValues[2] == 1 && collectedValues[2] != previousValues[2])
+                                            {
+                                                CompService.Instance.ComparacionStencilCorrecta = false;
+                                                await ShowMessageAsync("Stencil Retirado, Es necesario volver a escanearlo");
+                                            }
+                                            if (collectedValues[3] == 0)
+                                            {
+                                                Alarma.Stop();
+                                            }
+                                            else
+                                            {
+                                                Alarma.Start();
+                                            }
+                                            if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
+                                            {
+                                                Alarma.Stop();
+                                                pastvalues = collectedValues[3];
+                                                cont++;
+                                                updateLabel(cont.ToString());
+                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
+                                                reel.DisminuirCantidad(ObtenerNumParte());
+                                                RefrescarDataGridView();
+                                            }
+                                            else
+                                            {
+                                                //Alarma.Start();
+                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
+                                            }
                                         }
-                                        UpdateStatusInGrid(2, collectedValues[2] == 0 ? "✔" : "X");
-                                        if (collectedValues[2] == 1 && collectedValues[2] != previousValues[2])
-                                        {
-                                            CompService.Instance.ComparacionStencilCorrecta = false;
-                                            await ShowMessageAsync("Stencil Retirado, Es necesario volver a escanearlo");
-                                        }
-                                        if (collectedValues[3] == 0 && collectedValues[3] != previousValues[3])
-                                        {
-                                            Alarma.Stop();
-                                        }
-                                        else
-                                        {
-                                            Alarma.Start();
-                                        }
-                                        if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
-                                        {
-                                            Alarma.Stop();
-                                            pastvalues = collectedValues[3];
-                                            cont++;
-                                            updateLabel(cont.ToString());
-                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                            reel.DisminuirCantidad(ObtenerNumParte());
-                                            RefrescarDataGridView();
-                                        }
-                                        else
-                                        {
-                                            //Alarma.Start();
-                                            sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
-                                        }
+                                        
                                     }
 
                                     // Guardar los valores actuales como previos para la próxima iteración
@@ -681,7 +701,7 @@ namespace Comparacion2024
             {
                 if (e.KeyCode == Keys.F3)
                 {
-                    frmAddReel forma1 = new frmAddReel();
+                    frmAddReel forma1 = new frmAddReel("");
                     forma1.Show();
                 }
             }
