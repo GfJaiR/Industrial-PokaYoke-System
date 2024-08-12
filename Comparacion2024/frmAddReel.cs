@@ -14,9 +14,11 @@ namespace Comparacion2024
     {
         //private frmMain forma = new frmMain();
         string numempleado;
-        public frmAddReel(string num)
+        string reelid;
+        public frmAddReel(string num, string id)
         {
             this.numempleado = num;
+            this.reelid = id;
             InitializeComponent();
 			//this.frmCrudReel = crud;
 		}
@@ -25,6 +27,7 @@ namespace Comparacion2024
         {
             CenterFormOnScreen();
             txtUserID.Text = numempleado;
+            txtReelID.Text = reelid;
             txtPartNo.Focus();
             txtSupplierP.ReadOnly = true;
             txtDateCode.ReadOnly = true;
@@ -156,24 +159,17 @@ namespace Comparacion2024
                                 {
                                     // Éxito: el usuario se creó correctamente
                                     MessageBox.Show("Stencil agregado exitosamente");
-
-
-                                    //frmCrudReel.Actualizardgv();
-
-
-
+                                   //frmCrudReel.Actualizardgv();
                                 }
                             }
 							else if(isStencil(txtReelID.Text) == false)
 							{
-                                if (newpasta.AgregarPasta(NoUsuario, reelID, numerosinprefijo, cant))
+                                int lastcant = cant;
+                                if (newpasta.AgregarPasta(NoUsuario, reelID, numerosinprefijo, cant,lastcant))
                                 {
                                     // Éxito: el usuario se creó correctamente
                                     MessageBox.Show("Pasta agregada exitosamente");
                                     //frmCrudReel.Actualizardgv();
-
-
-
                                 }
                             }
                                 

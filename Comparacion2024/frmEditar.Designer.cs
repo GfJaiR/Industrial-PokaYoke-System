@@ -44,28 +44,28 @@ namespace Comparacion2024
 			// 
 			this.txtUserID.Location = new System.Drawing.Point(69, 24);
 			this.txtUserID.Name = "txtUserID";
-			this.txtUserID.Size = new System.Drawing.Size(186, 20);
+			this.txtUserID.Size = new System.Drawing.Size(308, 20);
 			this.txtUserID.TabIndex = 0;
 			// 
 			// txtReelID
 			// 
 			this.txtReelID.Location = new System.Drawing.Point(69, 63);
 			this.txtReelID.Name = "txtReelID";
-			this.txtReelID.Size = new System.Drawing.Size(186, 20);
+			this.txtReelID.Size = new System.Drawing.Size(308, 20);
 			this.txtReelID.TabIndex = 1;
 			// 
 			// txtPartNo
 			// 
 			this.txtPartNo.Location = new System.Drawing.Point(69, 101);
 			this.txtPartNo.Name = "txtPartNo";
-			this.txtPartNo.Size = new System.Drawing.Size(186, 20);
+			this.txtPartNo.Size = new System.Drawing.Size(308, 20);
 			this.txtPartNo.TabIndex = 2;
 			// 
 			// txtQuantity
 			// 
 			this.txtQuantity.Location = new System.Drawing.Point(69, 144);
 			this.txtQuantity.Name = "txtQuantity";
-			this.txtQuantity.Size = new System.Drawing.Size(186, 20);
+			this.txtQuantity.Size = new System.Drawing.Size(308, 20);
 			this.txtQuantity.TabIndex = 3;
 			// 
 			// label1
@@ -106,9 +106,9 @@ namespace Comparacion2024
 			// 
 			// btnOK
 			// 
-			this.btnOK.Location = new System.Drawing.Point(109, 194);
+			this.btnOK.Location = new System.Drawing.Point(69, 170);
 			this.btnOK.Name = "btnOK";
-			this.btnOK.Size = new System.Drawing.Size(75, 23);
+			this.btnOK.Size = new System.Drawing.Size(308, 39);
 			this.btnOK.TabIndex = 8;
 			this.btnOK.Text = "Ok";
 			this.btnOK.UseVisualStyleBackColor = true;
@@ -118,7 +118,7 @@ namespace Comparacion2024
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(300, 255);
+			this.ClientSize = new System.Drawing.Size(389, 220);
 			this.Controls.Add(this.btnOK);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);

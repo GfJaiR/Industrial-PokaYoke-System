@@ -9,7 +9,7 @@ namespace Comparacion2024
 {
 	class ClsPastas
 	{
-		public bool AgregarPasta(string userid, string reelid, string partno, int qu)
+		public bool AgregarPasta(string userid, string reelid, string partno, int qu, int lc)
 		{
             Pastas NuevaPasta = new Pastas();
             using (BDLogin db = new BDLogin())
@@ -19,6 +19,7 @@ namespace Comparacion2024
                 NuevaPasta.ReelID = reelid;
                 NuevaPasta.PartNo = partno;
                 NuevaPasta.Quantity = qu;
+                NuevaPasta.LastQuantitySet = lc;
                 // Agregar la pasta y guardar
                 db.Pastas.Add(NuevaPasta);
                 return db.SaveChanges() > 0;

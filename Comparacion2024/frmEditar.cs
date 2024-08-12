@@ -94,6 +94,14 @@ namespace Comparacion2024
             CenterToScreen();
             originalQuantity = txtQuantity.Text;
             CargarDatos();
+			if (txtReelID.Text.Contains("@"))
+			{
+                txtQuantity.ReadOnly = true;
+			}
+			else
+			{
+                txtQuantity.ReadOnly = false;
+			}
 		}
         private void CargarDatos()
         {
