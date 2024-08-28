@@ -12,9 +12,9 @@ namespace Comparacion2024
 {
 	public partial class FrmIncorrect : Form
 	{
-		private bool isStencil;
+		private bool? isStencil;
 		private frmReelCharge formacomp;
-		public FrmIncorrect(bool stencil, frmReelCharge forma)
+		public FrmIncorrect(bool? stencil, frmReelCharge forma)
 		{
 			this.isStencil = stencil;
 			this.formacomp = forma;
@@ -52,7 +52,7 @@ namespace Comparacion2024
 
 		private void FrmIncorrect_FormClosed(object sender, FormClosedEventArgs e)
 		{
-		//	formacomp.VaciarCampos();
+			formacomp.VaciarCampos();
 		}
 	}
 }

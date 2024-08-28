@@ -13,8 +13,8 @@ namespace Comparacion2024
 	public partial class FrmCorrect : Form
 	{
 		private frmReelCharge formacomp;
-		private bool isStencil;
-		public FrmCorrect(bool stencil, frmReelCharge forma)
+		private bool? isStencil;
+		public FrmCorrect(bool? stencil, frmReelCharge forma)
 		{
 			this.isStencil = stencil;
 			this.formacomp = forma;
@@ -47,7 +47,7 @@ namespace Comparacion2024
 
 		private void FrmCorrect_FormClosed(object sender, FormClosedEventArgs e)
 		{
-		//	formacomp.VaciarCampos();
+			formacomp.VaciarCampos();
 		}
 	}
 }

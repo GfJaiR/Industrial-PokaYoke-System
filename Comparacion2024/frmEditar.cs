@@ -28,12 +28,13 @@ namespace Comparacion2024
 
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-
             // Prepara la consulta SQL
             string query = "UPDATE " + CurrentTable + " SET UserID = @UserID, ReelID = @ReelID, PartNo = @PartNo, Quantity = @Quantity, LastQuantitySet = @LastQuantitySet WHERE RegistroID = @RegistroID";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                connection.Open(); // Abre la conexión una sola vez al inicio
+
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     // Asigna los valores de los TextBox a los parámetros
@@ -46,7 +47,8 @@ namespace Comparacion2024
                     // Verifica si txtQuantity ha cambiado
                     if (txtQuantity.Text != originalQuantity)
                     {
-                        command.Parameters.AddWithValue("@LastQuantitySet", originalQuantity);
+                        // Si la cantidad ha cambiado, asigna el valor actual de txtQuantity a LastQuantitySet
+                        command.Parameters.AddWithValue("@LastQuantitySet", txtQuantity.Text);
                     }
                     else
                     {
@@ -56,17 +58,23 @@ namespace Comparacion2024
                         using (SqlCommand getLastQuantityCommand = new SqlCommand(getLastQuantityQuery, connection))
                         {
                             getLastQuantityCommand.Parameters.AddWithValue("@RegistroID", RegistroID);
-                            connection.Open();
-                            object lastQuantity = getLastQuantityCommand.ExecuteScalar();
-                            connection.Close();
 
-                            command.Parameters.AddWithValue("@LastQuantitySet", lastQuantity ?? (object)DBNull.Value);
+                            object lastQuantity = getLastQuantityCommand.ExecuteScalar();
+
+                            // Asigna el valor obtenido de la base de datos, si es null asigna el valor original o DBNull
+                            if (lastQuantity != null && lastQuantity != DBNull.Value)
+                            {
+                                command.Parameters.AddWithValue("@LastQuantitySet", lastQuantity);
+                            }
+                            else
+                            {
+                                command.Parameters.AddWithValue("@LastQuantitySet", DBNull.Value);
+                            }
                         }
                     }
 
                     try
                     {
-                        connection.Open();
                         int result = command.ExecuteNonQuery();
 
                         if (result > 0)
@@ -85,16 +93,18 @@ namespace Comparacion2024
                         MessageBox.Show("Error al actualizar: " + ex.Message);
                     }
                 }
+
+                connection.Close(); // Cierra la conexión al final de todas las operaciones
             }
-            this.Close(); // Opcionalmente cierra el formulario
+            //this.Close(); // Opcionalmente cierra el formulario
         }
 
-		private void frmEditar_Load(object sender, EventArgs e)
+        private void frmEditar_Load(object sender, EventArgs e)
 		{
-            CenterToScreen();
-            originalQuantity = txtQuantity.Text;
+            CenterToScreen();          
             CargarDatos();
-			if (txtReelID.Text.Contains("@"))
+            originalQuantity = txtQuantity.Text;
+            if (txtReelID.Text.Contains("@"))
 			{
                 txtQuantity.ReadOnly = true;
 			}

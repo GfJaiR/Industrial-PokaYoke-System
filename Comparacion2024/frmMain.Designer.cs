@@ -40,16 +40,18 @@ namespace Comparacion2024
 			this.baseDeDatosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.Alarma = new System.Windows.Forms.Timer(this.components);
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.dgvCarga = new System.Windows.Forms.DataGridView();
 			this.dgvActions = new System.Windows.Forms.DataGridView();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.pictureStencil = new System.Windows.Forms.PictureBox();
-			this.picturePasta2 = new System.Windows.Forms.PictureBox();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.picturePasta1 = new System.Windows.Forms.PictureBox();
+			this.picturePasta2 = new System.Windows.Forms.PictureBox();
+			this.pictureStencil = new System.Windows.Forms.PictureBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.pictureCiclos = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.lblMonitor = new System.Windows.Forms.Label();
@@ -61,29 +63,41 @@ namespace Comparacion2024
 			this.lblBypass = new System.Windows.Forms.Label();
 			this.lblCiclos = new System.Windows.Forms.Label();
 			this.updateTimer = new System.Windows.Forms.Timer(this.components);
+			this.label1 = new System.Windows.Forms.Label();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.pictureCOM = new System.Windows.Forms.PictureBox();
 			this.label8 = new System.Windows.Forms.Label();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-			this.label9 = new System.Windows.Forms.Label();
-			this.pictureCiclos = new System.Windows.Forms.PictureBox();
+			this.miniToolStrip = new System.Windows.Forms.ToolStrip();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+			this.btnRecomp = new System.Windows.Forms.Button();
+			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolTipRecomp = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipPasta1 = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipPasta2 = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipStencil = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipCiclos = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipCOM = new System.Windows.Forms.ToolTip(this.components);
+			this.toolTipBypass = new System.Windows.Forms.ToolTip(this.components);
+			this.label10 = new System.Windows.Forms.Label();
+			this.lblUser = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvCarga)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvActions)).BeginInit();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).BeginInit();
+			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.picturePasta1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).BeginInit();
-			this.tableLayoutPanel1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.tableLayoutPanel2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).BeginInit();
+			this.groupBox1.SuspendLayout();
+			this.tableLayoutPanel3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -156,57 +170,27 @@ namespace Comparacion2024
 			this.Alarma.Interval = 1000;
 			this.Alarma.Tick += new System.EventHandler(this.Alarma_Tick);
 			// 
-			// groupBox1
-			// 
-			this.groupBox1.BackColor = System.Drawing.Color.Orange;
-			this.groupBox1.Controls.Add(this.tableLayoutPanel2);
-			this.groupBox1.Controls.Add(this.pictureBox1);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Location = new System.Drawing.Point(0, 27);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(882, 71);
-			this.groupBox1.TabIndex = 3;
-			this.groupBox1.TabStop = false;
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.InitialImage = null;
-			this.pictureBox1.Location = new System.Drawing.Point(-39, -67);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(279, 189);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox1.TabIndex = 5;
-			this.pictureBox1.TabStop = false;
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(246, 16);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(19, 25);
-			this.label1.TabIndex = 4;
-			this.label1.Text = "-";
-			this.label1.Click += new System.EventHandler(this.label1_Click);
-			// 
 			// dgvCarga
 			// 
+			this.dgvCarga.AllowUserToDeleteRows = false;
 			this.dgvCarga.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dgvCarga.BackgroundColor = System.Drawing.Color.White;
 			this.dgvCarga.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvCarga.Location = new System.Drawing.Point(12, 179);
+			this.dgvCarga.Location = new System.Drawing.Point(9, 182);
 			this.dgvCarga.Name = "dgvCarga";
+			this.dgvCarga.ReadOnly = true;
 			this.dgvCarga.Size = new System.Drawing.Size(867, 198);
 			this.dgvCarga.TabIndex = 5;
 			this.dgvCarga.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvCarga_CellFormatting_1);
 			// 
 			// dgvActions
 			// 
+			this.dgvActions.AllowUserToDeleteRows = false;
 			this.dgvActions.BackgroundColor = System.Drawing.Color.White;
 			this.dgvActions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dgvActions.Location = new System.Drawing.Point(12, 383);
+			this.dgvActions.Location = new System.Drawing.Point(9, 383);
 			this.dgvActions.Name = "dgvActions";
+			this.dgvActions.ReadOnly = true;
 			this.dgvActions.Size = new System.Drawing.Size(867, 152);
 			this.dgvActions.TabIndex = 6;
 			this.dgvActions.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvActions_CellFormatting);
@@ -231,6 +215,64 @@ namespace Comparacion2024
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			// 
+			// tableLayoutPanel1
+			// 
+			this.tableLayoutPanel1.ColumnCount = 4;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.25225F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.74775F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+			this.tableLayoutPanel1.Controls.Add(this.picturePasta1, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.picturePasta2, 1, 0);
+			this.tableLayoutPanel1.Controls.Add(this.pictureStencil, 2, 0);
+			this.tableLayoutPanel1.Controls.Add(this.label6, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.label5, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.label9, 3, 1);
+			this.tableLayoutPanel1.Controls.Add(this.label7, 2, 1);
+			this.tableLayoutPanel1.Controls.Add(this.pictureCiclos, 3, 0);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(667, 16);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.64865F));
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.35135F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(212, 66);
+			this.tableLayoutPanel1.TabIndex = 23;
+			// 
+			// picturePasta1
+			// 
+			this.picturePasta1.Location = new System.Drawing.Point(3, 3);
+			this.picturePasta1.Name = "picturePasta1";
+			this.picturePasta1.Size = new System.Drawing.Size(40, 26);
+			this.picturePasta1.TabIndex = 17;
+			this.picturePasta1.TabStop = false;
+			// 
+			// picturePasta2
+			// 
+			this.picturePasta2.Location = new System.Drawing.Point(61, 3);
+			this.picturePasta2.Name = "picturePasta2";
+			this.picturePasta2.Size = new System.Drawing.Size(39, 26);
+			this.picturePasta2.TabIndex = 18;
+			this.picturePasta2.TabStop = false;
+			// 
+			// pictureStencil
+			// 
+			this.pictureStencil.Location = new System.Drawing.Point(114, 3);
+			this.pictureStencil.Name = "pictureStencil";
+			this.pictureStencil.Size = new System.Drawing.Size(39, 26);
+			this.pictureStencil.TabIndex = 19;
+			this.pictureStencil.TabStop = false;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label6.Location = new System.Drawing.Point(61, 32);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(40, 13);
+			this.label6.TabIndex = 21;
+			this.label6.Text = "Pasta2";
+			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
@@ -241,29 +283,32 @@ namespace Comparacion2024
 			this.label5.TabIndex = 20;
 			this.label5.Text = "Pasta1";
 			// 
-			// pictureStencil
+			// label9
 			// 
-			this.pictureStencil.Location = new System.Drawing.Point(115, 3);
-			this.pictureStencil.Name = "pictureStencil";
-			this.pictureStencil.Size = new System.Drawing.Size(39, 26);
-			this.pictureStencil.TabIndex = 19;
-			this.pictureStencil.TabStop = false;
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(164, 32);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(35, 13);
+			this.label9.TabIndex = 8;
+			this.label9.Text = "Ciclos";
 			// 
-			// picturePasta2
+			// label7
 			// 
-			this.picturePasta2.Location = new System.Drawing.Point(59, 3);
-			this.picturePasta2.Name = "picturePasta2";
-			this.picturePasta2.Size = new System.Drawing.Size(39, 26);
-			this.picturePasta2.TabIndex = 18;
-			this.picturePasta2.TabStop = false;
+			this.label7.AutoSize = true;
+			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label7.Location = new System.Drawing.Point(114, 32);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(39, 13);
+			this.label7.TabIndex = 22;
+			this.label7.Text = "Stencil";
 			// 
-			// picturePasta1
+			// pictureCiclos
 			// 
-			this.picturePasta1.Location = new System.Drawing.Point(3, 3);
-			this.picturePasta1.Name = "picturePasta1";
-			this.picturePasta1.Size = new System.Drawing.Size(40, 26);
-			this.picturePasta1.TabIndex = 17;
-			this.picturePasta1.TabStop = false;
+			this.pictureCiclos.Location = new System.Drawing.Point(164, 3);
+			this.pictureCiclos.Name = "pictureCiclos";
+			this.pictureCiclos.Size = new System.Drawing.Size(39, 26);
+			this.pictureCiclos.TabIndex = 23;
+			this.pictureCiclos.TabStop = false;
 			// 
 			// pictureBox3
 			// 
@@ -287,7 +332,7 @@ namespace Comparacion2024
 			// 
 			this.lblMonitor.AutoSize = true;
 			this.lblMonitor.Font = new System.Drawing.Font("MS Reference Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblMonitor.Location = new System.Drawing.Point(351, 28);
+			this.lblMonitor.Location = new System.Drawing.Point(351, 19);
 			this.lblMonitor.Name = "lblMonitor";
 			this.lblMonitor.Size = new System.Drawing.Size(301, 40);
 			this.lblMonitor.TabIndex = 14;
@@ -311,7 +356,7 @@ namespace Comparacion2024
 			this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label3.ForeColor = System.Drawing.Color.Gray;
-			this.label3.Location = new System.Drawing.Point(273, 29);
+			this.label3.Location = new System.Drawing.Point(273, 32);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(72, 13);
 			this.label3.TabIndex = 12;
@@ -337,7 +382,7 @@ namespace Comparacion2024
 			this.lvlbeeper.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
 			this.lvlbeeper.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lvlbeeper.ForeColor = System.Drawing.Color.Gray;
-			this.lvlbeeper.Location = new System.Drawing.Point(165, 29);
+			this.lvlbeeper.Location = new System.Drawing.Point(165, 32);
 			this.lvlbeeper.Name = "lvlbeeper";
 			this.lvlbeeper.Size = new System.Drawing.Size(56, 13);
 			this.lvlbeeper.TabIndex = 10;
@@ -382,6 +427,44 @@ namespace Comparacion2024
 			// 
 			this.updateTimer.Tick += new System.EventHandler(this.updateTimer_Tick);
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(246, 16);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(19, 25);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "-";
+			this.label1.Click += new System.EventHandler(this.label1_Click);
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.InitialImage = null;
+			this.pictureBox1.Location = new System.Drawing.Point(-39, -53);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(281, 175);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.TabIndex = 5;
+			this.pictureBox1.TabStop = false;
+			// 
+			// tableLayoutPanel2
+			// 
+			this.tableLayoutPanel2.ColumnCount = 1;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanel2.Controls.Add(this.pictureCOM, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.label8, 0, 1);
+			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Right;
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(832, 16);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 2;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(47, 52);
+			this.tableLayoutPanel2.TabIndex = 8;
+			// 
 			// pictureCOM
 			// 
 			this.pictureCOM.Location = new System.Drawing.Point(3, 3);
@@ -400,81 +483,83 @@ namespace Comparacion2024
 			this.label8.TabIndex = 24;
 			this.label8.Text = "  COM";
 			// 
-			// tableLayoutPanel1
+			// miniToolStrip
 			// 
-			this.tableLayoutPanel1.ColumnCount = 4;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.tableLayoutPanel1.Controls.Add(this.picturePasta1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.picturePasta2, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.pictureStencil, 2, 0);
-			this.tableLayoutPanel1.Controls.Add(this.label6, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label5, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label9, 3, 1);
-			this.tableLayoutPanel1.Controls.Add(this.label7, 2, 1);
-			this.tableLayoutPanel1.Controls.Add(this.pictureCiclos, 3, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(667, 16);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.64865F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.35135F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(212, 66);
-			this.tableLayoutPanel1.TabIndex = 23;
+			this.miniToolStrip.AccessibleName = "New item selection";
+			this.miniToolStrip.AccessibleRole = System.Windows.Forms.AccessibleRole.ButtonDropDown;
+			this.miniToolStrip.AutoSize = false;
+			this.miniToolStrip.CanOverflow = false;
+			this.miniToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+			this.miniToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.miniToolStrip.Location = new System.Drawing.Point(9, 3);
+			this.miniToolStrip.Name = "miniToolStrip";
+			this.miniToolStrip.Size = new System.Drawing.Size(829, 25);
+			this.miniToolStrip.TabIndex = 9;
 			// 
-			// label6
+			// groupBox1
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(59, 32);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(40, 13);
-			this.label6.TabIndex = 21;
-			this.label6.Text = "Pasta2";
+			this.groupBox1.BackColor = System.Drawing.Color.Orange;
+			this.groupBox1.Controls.Add(this.lblUser);
+			this.groupBox1.Controls.Add(this.label10);
+			this.groupBox1.Controls.Add(this.tableLayoutPanel3);
+			this.groupBox1.Controls.Add(this.tableLayoutPanel2);
+			this.groupBox1.Controls.Add(this.pictureBox1);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(0, 27);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(882, 71);
+			this.groupBox1.TabIndex = 3;
+			this.groupBox1.TabStop = false;
 			// 
-			// label7
+			// tableLayoutPanel3
 			// 
-			this.label7.AutoSize = true;
-			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(115, 32);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(39, 13);
-			this.label7.TabIndex = 22;
-			this.label7.Text = "Stencil";
+			this.tableLayoutPanel3.ColumnCount = 1;
+			this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 47F));
+			this.tableLayoutPanel3.Controls.Add(this.btnRecomp, 0, 0);
+			this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Right;
+			this.tableLayoutPanel3.Location = new System.Drawing.Point(785, 16);
+			this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+			this.tableLayoutPanel3.RowCount = 1;
+			this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel3.Size = new System.Drawing.Size(47, 52);
+			this.tableLayoutPanel3.TabIndex = 9;
 			// 
-			// tableLayoutPanel2
+			// btnRecomp
 			// 
-			this.tableLayoutPanel2.ColumnCount = 1;
-			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-			this.tableLayoutPanel2.Controls.Add(this.pictureCOM, 0, 0);
-			this.tableLayoutPanel2.Controls.Add(this.label8, 0, 1);
-			this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Right;
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(832, 16);
-			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-			this.tableLayoutPanel2.RowCount = 2;
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
-			this.tableLayoutPanel2.Size = new System.Drawing.Size(47, 52);
-			this.tableLayoutPanel2.TabIndex = 8;
+			this.btnRecomp.Image = ((System.Drawing.Image)(resources.GetObject("btnRecomp.Image")));
+			this.btnRecomp.Location = new System.Drawing.Point(3, 3);
+			this.btnRecomp.Name = "btnRecomp";
+			this.btnRecomp.Size = new System.Drawing.Size(41, 42);
+			this.btnRecomp.TabIndex = 0;
+			this.btnRecomp.UseVisualStyleBackColor = true;
+			this.btnRecomp.Click += new System.EventHandler(this.btnRecomp_Click);
 			// 
-			// label9
+			// toolStrip1
 			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(165, 32);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(35, 13);
-			this.label9.TabIndex = 8;
-			this.label9.Text = "Ciclos";
+			this.toolStrip1.Location = new System.Drawing.Point(3, 16);
+			this.toolStrip1.Name = "toolStrip1";
+			this.toolStrip1.Size = new System.Drawing.Size(829, 25);
+			this.toolStrip1.TabIndex = 9;
+			this.toolStrip1.Text = "toolStrip1";
 			// 
-			// pictureCiclos
+			// label10
 			// 
-			this.pictureCiclos.Location = new System.Drawing.Point(165, 3);
-			this.pictureCiclos.Name = "pictureCiclos";
-			this.pictureCiclos.Size = new System.Drawing.Size(39, 26);
-			this.pictureCiclos.TabIndex = 23;
-			this.pictureCiclos.TabStop = false;
+			this.label10.AutoSize = true;
+			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label10.Location = new System.Drawing.Point(248, 47);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(72, 18);
+			this.label10.TabIndex = 10;
+			this.label10.Text = "Usuario:";
+			// 
+			// lblUser
+			// 
+			this.lblUser.AutoSize = true;
+			this.lblUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblUser.Location = new System.Drawing.Point(326, 47);
+			this.lblUser.Name = "lblUser";
+			this.lblUser.Size = new System.Drawing.Size(0, 18);
+			this.lblUser.TabIndex = 11;
 			// 
 			// frmMain
 			// 
@@ -500,24 +585,25 @@ namespace Comparacion2024
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvCarga)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.dgvActions)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.picturePasta1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).EndInit();
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.picturePasta2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureStencil)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).EndInit();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
+			this.tableLayoutPanel3.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -533,11 +619,8 @@ namespace Comparacion2024
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Timer Alarma;
 		private System.Windows.Forms.ToolStripMenuItem estacionToolStripMenuItem;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.DataGridView dgvCarga;
 		private System.Windows.Forms.DataGridView dgvActions;
-		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label lvlbeeper;
 		private System.Windows.Forms.Label lblcycle;
@@ -555,13 +638,29 @@ namespace Comparacion2024
 		private System.Windows.Forms.PictureBox picturePasta1;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Timer updateTimer;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.PictureBox pictureCOM;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 		private System.Windows.Forms.PictureBox pictureCiclos;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private System.Windows.Forms.PictureBox pictureCOM;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.ToolStrip miniToolStrip;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+		private System.Windows.Forms.Button btnRecomp;
+		private System.Windows.Forms.ToolStrip toolStrip1;
+		private System.Windows.Forms.ToolTip toolTipRecomp;
+		private System.Windows.Forms.ToolTip toolTipPasta1;
+		private System.Windows.Forms.ToolTip toolTipPasta2;
+		private System.Windows.Forms.ToolTip toolTipStencil;
+		private System.Windows.Forms.ToolTip toolTipCiclos;
+		private System.Windows.Forms.ToolTip toolTipCOM;
+		private System.Windows.Forms.ToolTip toolTipBypass;
+		private System.Windows.Forms.Label lblUser;
+		private System.Windows.Forms.Label label10;
 	}
 }

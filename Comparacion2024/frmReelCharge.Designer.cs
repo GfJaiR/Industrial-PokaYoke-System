@@ -77,6 +77,8 @@ namespace Comparacion2024
 			this.txtReelUserID.Size = new System.Drawing.Size(184, 20);
 			this.txtReelUserID.TabIndex = 1;
 			this.txtReelUserID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtReelUserID_KeyDown);
+			this.txtReelUserID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtReelUserID_KeyPress);
+			this.txtReelUserID.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtReelUserID_KeyUp);
 			// 
 			// groupBox1
 			// 
@@ -111,7 +113,8 @@ namespace Comparacion2024
 			this.btnGetValue.Location = new System.Drawing.Point(189, 81);
 			this.btnGetValue.Name = "btnGetValue";
 			this.btnGetValue.Size = new System.Drawing.Size(75, 23);
-			this.btnGetValue.TabIndex = 4;
+			this.btnGetValue.TabIndex = 6;
+			this.btnGetValue.TabStop = false;
 			this.btnGetValue.Text = "Get Value";
 			this.btnGetValue.UseVisualStyleBackColor = true;
 			// 
@@ -122,6 +125,7 @@ namespace Comparacion2024
 			this.txtreelvalue2.ReadOnly = true;
 			this.txtreelvalue2.Size = new System.Drawing.Size(40, 20);
 			this.txtreelvalue2.TabIndex = 5;
+			this.txtreelvalue2.TabStop = false;
 			// 
 			// label4
 			// 
@@ -139,6 +143,7 @@ namespace Comparacion2024
 			this.txtreelvalue1.ReadOnly = true;
 			this.txtreelvalue1.Size = new System.Drawing.Size(54, 20);
 			this.txtreelvalue1.TabIndex = 4;
+			this.txtreelvalue1.TabStop = false;
 			// 
 			// label3
 			// 
@@ -154,9 +159,11 @@ namespace Comparacion2024
 			this.txtReelID.Location = new System.Drawing.Point(80, 55);
 			this.txtReelID.Name = "txtReelID";
 			this.txtReelID.Size = new System.Drawing.Size(184, 20);
-			this.txtReelID.TabIndex = 3;
+			this.txtReelID.TabIndex = 1;
 			this.txtReelID.TextChanged += new System.EventHandler(this.txtReelID_TextChanged);
 			this.txtReelID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtReelID_KeyDown);
+			this.txtReelID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtReelID_KeyPress);
+			this.txtReelID.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtReelID_KeyUp);
 			// 
 			// label2
 			// 
@@ -172,7 +179,8 @@ namespace Comparacion2024
 			this.txtFeeder.Location = new System.Drawing.Point(80, 29);
 			this.txtFeeder.Name = "txtFeeder";
 			this.txtFeeder.Size = new System.Drawing.Size(184, 20);
-			this.txtFeeder.TabIndex = 2;
+			this.txtFeeder.TabIndex = 3;
+			this.txtFeeder.TabStop = false;
 			this.txtFeeder.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtFeeder_KeyDown);
 			// 
 			// groupBox3
@@ -181,7 +189,7 @@ namespace Comparacion2024
 			this.groupBox3.Controls.Add(this.btnSetUP);
 			this.groupBox3.Controls.Add(this.ComboLabelID);
 			this.groupBox3.Controls.Add(this.label5);
-			this.groupBox3.Location = new System.Drawing.Point(30, 264);
+			this.groupBox3.Location = new System.Drawing.Point(24, 264);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(299, 93);
 			this.groupBox3.TabIndex = 3;

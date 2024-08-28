@@ -74,6 +74,8 @@ namespace Comparacion2024
 			this.txtUserID.Name = "txtUserID";
 			this.txtUserID.Size = new System.Drawing.Size(210, 20);
 			this.txtUserID.TabIndex = 0;
+			this.txtUserID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUserID_KeyDown);
+			this.txtUserID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtUserID_KeyPress);
 			// 
 			// label1
 			// 
@@ -100,6 +102,8 @@ namespace Comparacion2024
 			this.txtReelID.Size = new System.Drawing.Size(185, 20);
 			this.txtReelID.TabIndex = 1;
 			this.txtReelID.TextChanged += new System.EventHandler(this.txtReelID_TextChanged);
+			this.txtReelID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtReelID_KeyDown);
+			this.txtReelID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtReelID_KeyPress);
 			// 
 			// label3
 			// 
@@ -124,7 +128,9 @@ namespace Comparacion2024
 			this.txtPartNo.Location = new System.Drawing.Point(122, 103);
 			this.txtPartNo.Name = "txtPartNo";
 			this.txtPartNo.Size = new System.Drawing.Size(185, 20);
-			this.txtPartNo.TabIndex = 3;
+			this.txtPartNo.TabIndex = 2;
+			this.txtPartNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPartNo_KeyDown);
+			this.txtPartNo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPartNo_KeyPress);
 			// 
 			// label5
 			// 
@@ -204,7 +210,8 @@ namespace Comparacion2024
 			this.txtQuantity.Location = new System.Drawing.Point(122, 287);
 			this.txtQuantity.Name = "txtQuantity";
 			this.txtQuantity.Size = new System.Drawing.Size(185, 20);
-			this.txtQuantity.TabIndex = 8;
+			this.txtQuantity.TabIndex = 3;
+			this.txtQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtQuantity_KeyPress);
 			// 
 			// label10
 			// 
@@ -306,7 +313,7 @@ namespace Comparacion2024
 			this.comboCompany.Location = new System.Drawing.Point(122, 68);
 			this.comboCompany.Name = "comboCompany";
 			this.comboCompany.Size = new System.Drawing.Size(185, 21);
-			this.comboCompany.TabIndex = 2;
+			this.comboCompany.TabIndex = 10;
 			this.comboCompany.Text = "CONTINENTAL";
 			// 
 			// label11
@@ -323,7 +330,7 @@ namespace Comparacion2024
 			this.txtSlot.Location = new System.Drawing.Point(122, 360);
 			this.txtSlot.Name = "txtSlot";
 			this.txtSlot.Size = new System.Drawing.Size(185, 20);
-			this.txtSlot.TabIndex = 10;
+			this.txtSlot.TabIndex = 19;
 			this.txtSlot.Text = "0";
 			// 
 			// label13
@@ -390,6 +397,7 @@ namespace Comparacion2024
 			this.btnCancel.TabIndex = 33;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// frmAddReel
 			// 

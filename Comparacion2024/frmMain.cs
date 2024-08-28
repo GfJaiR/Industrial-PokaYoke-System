@@ -19,7 +19,8 @@ using System.IO.Ports;
 namespace Comparacion2024
 {
     public partial class frmMain : Form
-    {         
+    {
+        int pastvalues = 1;
         private int tiempoTranscurrido = 0;
         int cont = 0;
         string nombreEstacion;
@@ -53,6 +54,23 @@ namespace Comparacion2024
         {
             InitializeComponent();
             InitializeDeviceWatcher();
+            // Instancia de ToolTips
+            ToolTip toolTip1 = new ToolTip();
+            ToolTip toolpasta1 = new ToolTip();
+            ToolTip toolpasta2 = new ToolTip();
+            ToolTip toolstencil = new ToolTip();
+            ToolTip toolciclos = new ToolTip();
+            ToolTip toolcom = new ToolTip();
+            ToolTip toolbypass = new ToolTip();
+
+            // Configuración de ToolTip
+            toolTip1.SetToolTip(btnRecomp, "Hacer la recomparacion para un nuevo programa");
+            toolpasta1.SetToolTip(picturePasta1, "Indicador de Comparacion de Pasta Slot (1):\nRojo - Incorrecto, Verde - Correcto");
+            toolpasta2.SetToolTip(picturePasta2, "Indicador de Comparacion de Pasta Slot (2):\nRojo - Incorrecto, Verde - Correcto");
+            toolstencil.SetToolTip(pictureStencil, "Indicador de Comparacion de Pasta Stencil Slot (3):\nRojo - Incorrecto, Verde - Correcto");
+            toolciclos.SetToolTip(pictureCiclos, "Indicador de conteo de ciclos:\nRojo - Sin deteccion de tablero, Verde - Deteccion de tablero");
+            toolcom.SetToolTip(pictureCOM, "Indicador de comunicacion con SeaLevel:\nRojo - Sin Comunicacion, Verde - Con Comunicacion");
+            toolbypass.SetToolTip(label2, "Modo Bypass, SOLO ADMINISTRADORES");
             dgvActions.CellFormatting += dgvActions_CellFormatting;
             pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
             pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
@@ -66,7 +84,7 @@ namespace Comparacion2024
                 picturePasta2.Paint += PictureBox_Paint;
                 pictureStencil.Paint += PictureBox_Paint;
             pictureCOM.Paint += PictureBoxCOM_Paint;
-            pictureCiclos.Paint += PictureBoxCiclos_Paint;
+            pictureCiclos.Paint += PictureBox_Paint;
             // Initialize and start the timer
             updateTimer = new System.Windows.Forms.Timer();
             updateTimer.Interval = 1000; // 1 second
@@ -88,7 +106,7 @@ namespace Comparacion2024
             bool sens = sensor;
 
             // Draw the circle
-            DrawCircle(e.Graphics, pictureBox.ClientRectangle, sensor);
+            DrawCircle(e.Graphics, pictureBox.ClientRectangle, sens);
         }
         private void StopRetryTimer()
         {
@@ -127,7 +145,7 @@ namespace Comparacion2024
             dgvActions.DefaultCellStyle.Font = new Font("Arial", 12);
             dgvActions.Columns.Add("Tiempo", "Tiempo");
             dgvActions.Columns.Add("Accion", "Accion");
-           
+            lblUser.Text = nombreusuario;
             if (File.Exists(filePath))
             {
                nombreEstacion = File.ReadAllText(filePath);
@@ -384,7 +402,7 @@ namespace Comparacion2024
             int start = 0;
             int start1 = 0;
             int numberofchannels = 1;
-            int pastvalues = 1;
+           
             int cont = 0;
 
 			while (!token.IsCancellationRequested)
@@ -427,9 +445,10 @@ namespace Comparacion2024
                                         OnDataUpdated(collectedValues.ToArray());
 										if (bypass == true)
 										{
-                                            if (collectedValues[3] == 0)
+                                            if (collectedValues[3] == 0 && VerificarResultados() && pastvalues == 1)
                                             {
-                                                Alarma.Stop();
+                                                pastvalues = collectedValues[3];
+                                                Descuento();
                                             }
                                             else
                                             {
@@ -438,15 +457,11 @@ namespace Comparacion2024
                                             UpdateStatusInGrid(0, "");
                                             UpdateStatusInGrid(1, "");
                                             //  UpdateStatusInGrid(2, "");
-                                            if (bypass == true && VerificarResultados() && collectedValues[3] == 0 && pastvalues == 1)
+                                            if (bypass == true && VerificarResultados())
                                             {
-                                                Alarma.Stop();
-                                                pastvalues = collectedValues[3];
-                                                cont++;
-                                                updateLabel(cont.ToString());
+                                               
                                                 sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                                reel.DisminuirCantidad(ObtenerNumParte());
-                                                RefrescarDataGridView();
+                                               
                                             }
                                             else
                                             {
@@ -470,28 +485,23 @@ namespace Comparacion2024
                                             //lblCiclos.Text = cont.ToString();
 
                                             // Decide qué conjunto de valores enviar a los outputs digitales
-                                            if (collectedValues[3] == 0)
+                                            if (collectedValues[3] == 0 && VerificarResultados() && pastvalues == 1)
                                             {
-                                                Alarma.Stop();
-                                            }
-                                            else
-                                            {
-                                                Alarma.Start();
-                                            }
-                                            if (collectedValues[3] == 0 && pastvalues == 1 && collectedValues[0] == 0 && collectedValues[2] == 0 && VerificarResultados())
-                                            {
-
-                                                Alarma.Stop();
                                                 pastvalues = collectedValues[3];
-                                                cont++;
-                                                updateLabel(cont.ToString());
-                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                                reel.DisminuirCantidad(ObtenerNumParte());
-                                                RefrescarDataGridView();
+                                                Descuento();
                                             }
                                             else
                                             {
                                                 Alarma.Start();
+                                            }
+                                            if (collectedValues[0] == 0 && collectedValues[2] == 0 && VerificarResultados())
+                                            {
+                                               
+                                                sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);                                                
+                                            }
+                                            else
+                                            {
+                                              
                                                 sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values2);
                                             }
                                         }
@@ -508,14 +518,7 @@ namespace Comparacion2024
                                         {
                                             sensor = false;
                                         }
-                                        if (collectedValues[3] == 0)
-                                        {
-                                            sensor = true;
-                                        }
-                                        else if (collectedValues[3] == 1)
-                                        {
-                                            sensor = false;
-                                        }
+                                       
                                         EsdeDosPastas = true;
                                         EsdeUnaPasta = false;
                                         OnDataUpdated(collectedValues.ToArray());
@@ -524,23 +527,20 @@ namespace Comparacion2024
                                             UpdateStatusInGrid(0,  "");
                                             UpdateStatusInGrid(1, "");
                                             UpdateStatusInGrid(2,  "");
-                                            if (collectedValues[3] == 0)
+                                            if (collectedValues[3] == 0 && VerificarResultados() && pastvalues == 1)
                                             {
-                                                Alarma.Stop();
+                                                pastvalues = collectedValues[3];
+                                                Descuento();
                                             }
                                             else
                                             {
                                                 Alarma.Start();
                                             }
-                                            if (bypass == true && VerificarResultados() && collectedValues[3] == 0 && pastvalues == 1)
+                                            if (bypass == true && VerificarResultados())
 											{
-                                                Alarma.Stop();
-                                                pastvalues = collectedValues[3];
-                                                cont++;
-                                                updateLabel(cont.ToString());
+                                                
                                                 sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                                reel.DisminuirCantidad(ObtenerNumParte());
-                                                RefrescarDataGridView();
+                                               
                                             }
 											else
 											{
@@ -568,23 +568,19 @@ namespace Comparacion2024
                                                 CompService.Instance.ComparacionStencilCorrecta = false;
                                                 await ShowMessageAsync("Stencil Retirado, Es necesario volver a escanearlo");
                                             }
-                                            if (collectedValues[3] == 0)
+                                            if (collectedValues[3] == 0 && VerificarResultados() && pastvalues == 1)
                                             {
-                                                Alarma.Stop();
+                                                pastvalues = collectedValues[3];
+                                                Descuento();
                                             }
                                             else
                                             {
                                                 Alarma.Start();
                                             }
-                                            if (collectedValues[3] == 0 && collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && pastvalues == 1 && VerificarResultados())
+                                            if (collectedValues[0] == 0 && collectedValues[2] == 0 && collectedValues[1] == 0 && VerificarResultados())
                                             {
-                                                Alarma.Stop();
-                                                pastvalues = collectedValues[3];
-                                                cont++;
-                                                updateLabel(cont.ToString());
+
                                                 sea.SM_WriteDigitalOutputs(start1, numberofchannels, Values1);
-                                                reel.DisminuirCantidad(ObtenerNumParte());
-                                                RefrescarDataGridView();
                                             }
                                             else
                                             {
@@ -599,7 +595,7 @@ namespace Comparacion2024
                                     previousValues = new List<byte>(collectedValues);
                                 }
 
-                                // Más casos y manejo de errores
+                          
 
                                 if (collectedValues[3] == 1 && pastvalues == 0)
                                 {
@@ -643,7 +639,14 @@ namespace Comparacion2024
                 context.Send(_ => MessageBox.Show(message), null);
             });
         }
-
+        public void Descuento()
+		{
+            Alarma.Stop();
+            cont++;
+            updateLabel(cont.ToString());
+            reel.DisminuirCantidad(ObtenerNumParte());
+            RefrescarDataGridView();
+        }
         public void CargarFormaComparaciones()
         {
             if (dgvCarga.Rows.Count > 0)
@@ -698,66 +701,47 @@ namespace Comparacion2024
             {
                 conexion.Open();
 
-                // Diccionario para almacenar los datos de Pastas
-                Dictionary<string, (string reelID, string quantity)> datosPastas = new Dictionary<string, (string reelID, string quantity)>();
-
-                // Query para la tabla Pastas
-                string queryPastas = "SELECT PartNo, ReelID, Quantity FROM Pastas";
-                SqlCommand comandoPastas = new SqlCommand(queryPastas, conexion);
-                SqlDataReader readerPastas = comandoPastas.ExecuteReader();
-
-                while (readerPastas.Read())
-                {
-                    string partNo = readerPastas["PartNo"].ToString();
-                    string reelID = readerPastas["ReelID"].ToString();
-                    string quantity = readerPastas["Quantity"].ToString();
-                    datosPastas[partNo] = (reelID, quantity);
-                }
-
-                readerPastas.Close();
-
-                // Variable para almacenar los datos de Stenciles
-                (string partNo, string reelID, string quantity) datosStencil = (null, null, null);
-
-                // Query para la tabla Stenciles
-                string queryStenciles = "SELECT PartNo, ReelID, Quantity FROM Stenciles";
-                SqlCommand comandoStenciles = new SqlCommand(queryStenciles, conexion);
-                SqlDataReader readerStenciles = comandoStenciles.ExecuteReader();
-
-                if (readerStenciles.Read())
-                {
-                    datosStencil.partNo = readerStenciles["PartNo"].ToString();
-                    datosStencil.reelID = readerStenciles["ReelID"].ToString();
-                    datosStencil.quantity = readerStenciles["Quantity"].ToString();
-                }
-
-                readerStenciles.Close();
-                conexion.Close();
-
-                // Actualizar filas de Pastas en el DataGridView
                 foreach (DataGridViewRow row in dgvCarga.Rows)
                 {
                     if (row.Cells["Part No"].Value != null)
                     {
                         string partNo = row.Cells["Part No"].Value.ToString();
+                        string reelId = "Sin dar de alta";
+                        string cantidad = "Sin Datos";
+                        string query;
 
-                        if (datosPastas.ContainsKey(partNo))
+                        if (row.Index < dgvCarga.Rows.Count - 2)
                         {
-                            var datos = datosPastas[partNo];
-                            if (row.Cells["ReelID"].Value.ToString() != datos.reelID)
-                                row.Cells["ReelID"].Value = datos.reelID;
-                            if (row.Cells["Quantity"].Value.ToString() != datos.quantity)
-                                row.Cells["Quantity"].Value = datos.quantity;
+                            // Obtener datos de la tabla Pastas para todas las filas excepto la última
+                            query = "SELECT ReelID, Quantity FROM Pastas WHERE PartNo = @PartNo";
                         }
-                        else if (partNo == datosStencil.partNo)
+                        else
                         {
-                            if (row.Cells["ReelID"].Value.ToString() != datosStencil.reelID)
-                                row.Cells["ReelID"].Value = datosStencil.reelID;
-                            if (row.Cells["Quantity"].Value.ToString() != datosStencil.quantity)
-                                row.Cells["Quantity"].Value = datosStencil.quantity;
+                            // Obtener datos de la tabla Stenciles para la última fila
+                            query = "SELECT ReelID, Quantity FROM Stenciles WHERE PartNo = @PartNo";
                         }
+
+                        SqlCommand comando = new SqlCommand(query, conexion);
+                        comando.Parameters.AddWithValue("@PartNo", partNo);
+                        SqlDataReader reader = comando.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            reelId = reader["ReelID"]?.ToString() ?? "Sin dar de alta";
+                            cantidad = reader["Quantity"]?.ToString() ?? "Sin Datos";
+                        }
+
+                        reader.Close();
+
+                        // Actualizar solo los campos ReelID y Quantity
+                        if (row.Cells["ReelID"].Value.ToString() != reelId)
+                            row.Cells["ReelID"].Value = reelId;
+                        if (row.Cells["Quantity"].Value.ToString() != cantidad)
+                            row.Cells["Quantity"].Value = cantidad;
                     }
                 }
+
+                conexion.Close();
             }
             catch (Exception ex)
             {
@@ -768,6 +752,7 @@ namespace Comparacion2024
                 }
             }
         }
+
 
 
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
@@ -822,14 +807,14 @@ namespace Comparacion2024
                     dataTable.Columns.Add("Status");
 
                     int totalRows = lineas.Length;
-                    int initialRows = Math.Min(totalRows - 1, 2); // Al menos una fila se tomará de Stenciles
                     int currentRow = 0;
 
                     foreach (string linea in lineas)
                     {
                         string[] campos = linea.Split(',');
 
-                        if (campos.Length == 4)
+                        // Ignorar filas vacías o filas con menos de 4 columnas válidas
+                        if (campos.Length == 4 && !string.IsNullOrWhiteSpace(linea))
                         {
                             for (int i = 0; i < campos.Length; i++)
                             {
@@ -841,14 +826,14 @@ namespace Comparacion2024
                             string cantidad = "Sin Datos";
 
                             string query;
-                            if (currentRow < initialRows)
+                            if (currentRow < totalRows - 2)
                             {
-                                // Obtener datos de la tabla Pastas para las primeras filas
+                                // Obtener datos de la tabla Pastas para todas las filas excepto la última
                                 query = "SELECT ReelID, Quantity FROM Pastas WHERE PartNo = @PartNo";
                             }
                             else
                             {
-                                // Obtener datos de la tabla Stenciles para las últimas filas
+                                // Obtener datos de la tabla Stenciles para la última fila
                                 query = "SELECT ReelID, Quantity FROM Stenciles WHERE PartNo = @PartNo";
                             }
 
@@ -863,18 +848,28 @@ namespace Comparacion2024
                             }
                             reader.Close(); // Asegúrate de cerrar el reader después de cada lectura
 
-                            // Agrega los datos al dataTable, incluyendo reelId y cantidad sean o no vacíos
-                            dataTable.Rows.Add(new object[] { campos[0], campos[1], campos[2], campos[3], reelId, cantidad, "" });
+							// Agrega los datos al dataTable, incluyendo reelId y cantidad sean o no vacíos
+							try
+							{
+                                dataTable.Rows.Add(new object[] { campos[0], campos[1], campos[2], campos[3], reelId, cantidad, "" });
+                            }
+							catch (Exception ex)
+							{
+
+                                MessageBox.Show("Error:" + ex);
+							}
+                           
                             currentRow++;
                         }
                     }
 
-                    conexion.Close();
                     dgvCarga.DataSource = dataTable;
                     this.Text = $"EBT - Estación: {nombreEstacion + "::" + openFileDialog1.FileName}";
 
-                    // Obtén la última fila de dgvCarga
-                    if (dgvCarga.Rows.Count > 0)
+                    conexion.Close();
+
+                    // Verificación de la última fila válida
+                    if (dgvCarga.Rows.Count > 1)
                     {
                         DataGridViewRow lastRow = dgvCarga.Rows[dgvCarga.Rows.Count - 2];
                         string reelID = lastRow.Cells["ReelID"].Value?.ToString();
@@ -895,7 +890,7 @@ namespace Comparacion2024
                                     int lastQuantitySet = Convert.ToInt32(reader["LastQuantitySet"]);
 
                                     // Calcula la diferencia y actualiza lblCiclos
-                                    int diferencia =  lastQuantitySet - quantity;
+                                    int diferencia = lastQuantitySet - quantity;
                                     lblCiclos.Text = diferencia.ToString();
                                     cont = diferencia;
                                 }
@@ -910,7 +905,13 @@ namespace Comparacion2024
                             }
                         }
                     }
-                    //cambiar comparaciones a false, nuevo programa cargado
+                    else
+                    {
+                        lblCiclos.Text = "0";
+                        cont = 0;
+                    }
+
+                    // Cambiar comparaciones a false, nuevo programa cargado
                     CompService.Instance.ComparacionPasta1Correcta = false;
                     CompService.Instance.ComparacionPasta2Correcta = false;
                     CompService.Instance.ComparacionStencilCorrecta = false;
@@ -1073,6 +1074,11 @@ namespace Comparacion2024
                     e.CellStyle.BackColor = Color.LightCoral; // Cambiar a color rojo para X
                     e.CellStyle.ForeColor = Color.Black; // Texto en color negro para mayor visibilidad
                 }
+				else if (status == "")
+				{
+                    e.CellStyle.BackColor = Color.White; // Cambiar a color rojo para X
+                    e.CellStyle.ForeColor = Color.White; // Texto en color negro para mayor visibilidad
+                }
                 else
                 {
                     e.CellStyle.BackColor = Color.LimeGreen; // Cambiar a color verde para ✔
@@ -1106,8 +1112,72 @@ namespace Comparacion2024
             }
          
         }
+        private void RecompararPartes()
+        {
+            // Inicializar todos los valores booleanos a false
+            CompService.Instance.ComparacionPasta1Correcta = false;
+            CompService.Instance.ComparacionPasta2Correcta = false;
+            CompService.Instance.ComparacionStencilCorrecta = false;
 
-		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+            // Obtener los números de parte guardados en la clase CompService
+            string pasta1Guardada = CompService.Instance.ComparacionPasta1;
+            string pasta2Guardada = CompService.Instance.ComparacionPasta2;
+            string stencilGuardado = CompService.Instance.ComparacionStencil;
+
+            // Iterar sobre las filas del DataGridView para la re-comparación
+            foreach (DataGridViewRow fila in dgvCarga.Rows)
+            {
+                if (fila.Cells["Part No"].Value != null)
+                {
+                    string numeroDeParte = fila.Cells["Part No"].Value.ToString();
+
+                    if (EsdeDosPastas)
+                    {
+                        // Comparar pasta 1
+                        if (numeroDeParte == pasta1Guardada)
+                        {
+                            CompService.Instance.ComparacionPasta1Correcta = true;
+                        }
+                        // Comparar pasta 2
+                        if (numeroDeParte == pasta2Guardada)
+                        {
+                            CompService.Instance.ComparacionPasta2Correcta = true;
+                        }
+                    }
+                    else if (EsdeUnaPasta)
+                    {
+                        // Comparar pasta 1
+                        if (numeroDeParte == pasta1Guardada)
+                        {
+                            CompService.Instance.ComparacionPasta1Correcta = true;
+                        }
+                    }
+
+                    // Comparar stencil
+                    if (numeroDeParte == stencilGuardado)
+                    {
+                        CompService.Instance.ComparacionStencilCorrecta = true;
+                    }
+                }
+            }
+
+            // Actualizar el estado de las comparaciones en el formulario
+            ActualizarEstadoComparaciones();
+        }
+        private void ActualizarEstadoComparaciones()
+        {
+            // Actualizar los valores locales desde la instancia de CompService
+            pasta1Correcta = CompService.Instance.ComparacionPasta1Correcta;
+            pasta2Correcta = CompService.Instance.ComparacionPasta2Correcta;
+            stencilCorrecta = CompService.Instance.ComparacionStencilCorrecta;
+
+            // Forzar un repintado de los PictureBox para reflejar el estado actualizado
+            picturePasta1.Invalidate();
+            picturePasta2.Invalidate();
+            pictureStencil.Invalidate();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
 
 		}
@@ -1153,6 +1223,7 @@ namespace Comparacion2024
             picturePasta2.Invalidate();
             pictureStencil.Invalidate();
             pictureCOM.Invalidate();
+            pictureCiclos.Invalidate();
         }
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
@@ -1165,6 +1236,8 @@ namespace Comparacion2024
                 isCorrect = pasta2Correcta;
             else if (pictureBox == pictureStencil)
                 isCorrect = stencilCorrecta;
+            else if (pictureBox == pictureCiclos)
+                isCorrect = sensor;
 
             // Draw the circle
             DrawCircle(e.Graphics, pictureBox.ClientRectangle, isCorrect);
@@ -1184,6 +1257,17 @@ namespace Comparacion2024
                 graphics.FillEllipse(brush, x, y, diameter, diameter);
                 graphics.DrawEllipse(pen, x, y, diameter, diameter);
             }
+        }
+
+		private void btnRecomp_Click(object sender, EventArgs e)
+		{
+            // Verificar si el DataGridView no tiene datos cargados
+            if (dgvCarga.Rows.Count == 0)
+            {
+                MessageBox.Show("No hay un programa cargado. Por favor, cargue un programa antes de recomparar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // Salir del método si no hay datos cargados
+            }
+            RecompararPartes();
         }
 
 		private void label2_Click(object sender, EventArgs e)

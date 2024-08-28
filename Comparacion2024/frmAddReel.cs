@@ -28,7 +28,15 @@ namespace Comparacion2024
             CenterFormOnScreen();
             txtUserID.Text = numempleado;
             txtReelID.Text = reelid;
-            txtPartNo.Focus();
+			if (txtUserID.Text == "" && txtReelID.Text == "")
+			{
+                txtUserID.Focus();
+			}
+			else if (txtUserID.Text != null && txtReelID.Text != null)
+			{
+                txtPartNo.Focus();
+            }
+            
             txtSupplierP.ReadOnly = true;
             txtDateCode.ReadOnly = true;
             txtValue1.ReadOnly = true;
@@ -112,13 +120,17 @@ namespace Comparacion2024
 		}
         private void btnOK_Click(object sender, EventArgs e)
         {
-            
+            Agregar();
+           
+        }
+        public void Agregar()
+		{
             bool reelExists = VerificarReelExistente(txtReelID.Text);
             string NoUsuario = txtUserID.Text;
             string reelID = txtReelID.Text;
-          
+
             int cant;
-          
+
             ClsStenciles newstencil = new ClsStenciles();
             ClsPastas newpasta = new ClsPastas();
             try
@@ -129,66 +141,75 @@ namespace Comparacion2024
                 }
                 else
                 {
-					
+
                     if (txtPartNo.Text == "" || txtPartNo.Text == null)
                     {
                         MessageBox.Show("Ingrese el numero de parte");
                     }
                     else
                     {
-                        if (txtUserID.Text.Length == 8)
+                        if (txtUserID.Text.Length == 7 || txtUserID.Text.Length == 8)
                         {
                             string numerosinprefijo = txtPartNo.Text;
                             if (txtPartNo.Text.Length == 14 && txtPartNo.Text.StartsWith("P"))
                             {
                                 numerosinprefijo = txtPartNo.Text.Substring(1);
                             }
-							
+
                             if (txtQuantity.Text == "")
-					            {
-                                    cant = 0;
-					            }
-							else
-							{
-                                cant = Convert.ToInt32(txtQuantity.Text);
-							}
-							if (isStencil(txtReelID.Text))
-							{
-                                int lastcant = cant;
-                                if (newstencil.AgregarStencil(NoUsuario, reelID, numerosinprefijo, cant,lastcant))
-                                {
-                                    // Éxito: el usuario se creó correctamente
-                                    MessageBox.Show("Stencil agregado exitosamente");
-                                   //frmCrudReel.Actualizardgv();
-                                }
+                            {
+                                cant = 0;
                             }
-							else if(isStencil(txtReelID.Text) == false)
-							{
+                            else
+                            {
+                                cant = Convert.ToInt32(txtQuantity.Text);
+                            }
+                            if (isStencil(txtReelID.Text))
+                            {
                                 int lastcant = cant;
-                                if (newpasta.AgregarPasta(NoUsuario, reelID, numerosinprefijo, cant,lastcant))
+								if (cant == 0)
+								{
+                                    MessageBox.Show("Stencil Requiere Cantidad");
+								}
+								else
+								{
+                                    if (newstencil.AgregarStencil(NoUsuario, reelID, numerosinprefijo, cant, lastcant))
+                                    {
+                                        // Éxito: el usuario se creó correctamente
+                                        MessageBox.Show("Stencil agregado exitosamente");
+                                        //frmCrudReel.Actualizardgv();
+                                    }
+									
+                                }
+                                
+                            }
+                            else if (isStencil(txtReelID.Text) == false)
+                            {
+                                int lastcant = cant;
+                                if (newpasta.AgregarPasta(NoUsuario, reelID, numerosinprefijo, cant, lastcant))
                                 {
                                     // Éxito: el usuario se creó correctamente
                                     MessageBox.Show("Pasta agregada exitosamente");
                                     //frmCrudReel.Actualizardgv();
                                 }
                             }
-                                
-							else
-							{
-								MessageBox.Show("Error al agregar, verifique los datos");
-							}
+
+                            else
+                            {
+                                MessageBox.Show("Error al agregar, verifique los datos");
+                            }
 
 
-						}
+                        }
                         else
                         {
                             MessageBox.Show("El numero de empleado tiene menos o mas de 8 caracteres");
                         }
                     }
                 }
-               
-               
-              
+
+
+
             }
             catch (Exception ex)
             {
@@ -238,6 +259,102 @@ namespace Comparacion2024
 
                 txtQuantity.ReadOnly = false;
             }
+		}
+
+		private void txtUserID_KeyDown(object sender, KeyEventArgs e)
+		{
+            if (e.KeyCode == Keys.Enter)
+            {
+                txtReelID.Focus();
+            }
+            if (e.KeyCode == Keys.Tab)
+            {
+               txtReelID.Focus();
+            }
+        }
+
+		private void txtReelID_KeyDown(object sender, KeyEventArgs e)
+		{
+            if (e.KeyCode == Keys.Enter)
+            {
+              txtPartNo.Focus();
+            }
+            if (e.KeyCode == Keys.Tab)
+            {
+                txtPartNo.Focus();
+            }
+        }
+
+		private void txtPartNo_KeyDown(object sender, KeyEventArgs e)
+		{
+            if (e.KeyCode == Keys.Enter)
+            {
+				if (isStencil(txtReelID.Text))
+				{
+                    txtQuantity.Focus();
+                }
+				else
+				{
+                    Agregar();
+				}
+                
+            }
+            if (e.KeyCode == Keys.Tab)
+            {
+                if (isStencil(txtReelID.Text))
+                {
+                    txtQuantity.Focus();
+                }
+				else
+				{
+                    Agregar();
+				}
+            }
+        }
+
+		private void txtUserID_KeyPress(object sender, KeyPressEventArgs e)
+		{
+            // Verifica si el carácter presionado es alfanumérico o el símbolo especial @
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                // Si no es alfanumérico, @ o una tecla de control, cancela el evento
+                e.Handled = true;
+            }
+        }
+
+		private void txtReelID_KeyPress(object sender, KeyPressEventArgs e)
+		{
+            // Verifica si el carácter presionado es alfanumérico o el símbolo especial @
+            if (!char.IsLetterOrDigit(e.KeyChar) && e.KeyChar != '@' && !char.IsControl(e.KeyChar))
+            {
+                // Si no es alfanumérico, @ o una tecla de control, cancela el evento
+                e.Handled = true;
+            }
+        }
+
+		private void txtPartNo_KeyPress(object sender, KeyPressEventArgs e)
+		{
+            // Verifica si el carácter presionado es alfanumérico o el símbolo especial @
+            if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                // Si no es alfanumérico, @ o una tecla de control, cancela el evento
+                e.Handled = true;
+            }
+        }
+
+		private void txtQuantity_KeyPress(object sender, KeyPressEventArgs e)
+		{
+            // Verifica si el carácter presionado es alfanumérico o el símbolo especial @
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '@' && !char.IsControl(e.KeyChar))
+            {
+                // Si no es alfanumérico, @ o una tecla de control, cancela el evento
+                e.Handled = true;
+            }
+        }
+
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+            this.Close();
 		}
 	}
 }

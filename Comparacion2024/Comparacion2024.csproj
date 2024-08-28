@@ -234,6 +234,18 @@
     <Compile Include="FrmIncorrect.Designer.cs">
       <DependentUpon>FrmIncorrect.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmNueva.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNueva.Designer.cs">
+      <DependentUpon>FrmNueva.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmStandby.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmStandby.Designer.cs">
+      <DependentUpon>FrmStandby.cs</DependentUpon>
+    </Compile>
     <Compile Include="MPM_COMPARACIONES.cs" />
     <Compile Include="Pastas.cs" />
     <Compile Include="Stenciles.cs" />
@@ -308,8 +320,14 @@
     <EmbeddedResource Include="FrmManageUsers.resx">
       <DependentUpon>FrmManageUsers.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmNueva.resx">
+      <DependentUpon>FrmNueva.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmReelCharge.resx">
       <DependentUpon>frmReelCharge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmStandby.resx">
+      <DependentUpon>FrmStandby.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
