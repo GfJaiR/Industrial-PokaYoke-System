@@ -64,7 +64,7 @@ namespace Comparacion2024
 			this.lblCiclos = new System.Windows.Forms.Label();
 			this.updateTimer = new System.Windows.Forms.Timer(this.components);
 			this.label1 = new System.Windows.Forms.Label();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.pictureCOM = new System.Windows.Forms.PictureBox();
 			this.label8 = new System.Windows.Forms.Label();
@@ -93,7 +93,7 @@ namespace Comparacion2024
 			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+		
 			this.tableLayoutPanel2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).BeginInit();
 			this.groupBox1.SuspendLayout();
@@ -437,17 +437,7 @@ namespace Comparacion2024
 			this.label1.TabIndex = 4;
 			this.label1.Text = "-";
 			this.label1.Click += new System.EventHandler(this.label1_Click);
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.InitialImage = null;
-			this.pictureBox1.Location = new System.Drawing.Point(-39, -53);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(281, 175);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox1.TabIndex = 5;
-			this.pictureBox1.TabStop = false;
+		
 			// 
 			// tableLayoutPanel2
 			// 
@@ -503,7 +493,7 @@ namespace Comparacion2024
 			this.groupBox1.Controls.Add(this.label10);
 			this.groupBox1.Controls.Add(this.tableLayoutPanel3);
 			this.groupBox1.Controls.Add(this.tableLayoutPanel2);
-			this.groupBox1.Controls.Add(this.pictureBox1);
+		
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Location = new System.Drawing.Point(0, 27);
 			this.groupBox1.Name = "groupBox1";
@@ -597,7 +587,7 @@ namespace Comparacion2024
 			((System.ComponentModel.ISupportInitialize)(this.pictureCiclos)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			
 			this.tableLayoutPanel2.ResumeLayout(false);
 			this.tableLayoutPanel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureCOM)).EndInit();
@@ -644,7 +634,7 @@ namespace Comparacion2024
 		private System.Windows.Forms.PictureBox pictureCiclos;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.PictureBox pictureBox1;
+	
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
 		private System.Windows.Forms.PictureBox pictureCOM;
 		private System.Windows.Forms.Label label8;
